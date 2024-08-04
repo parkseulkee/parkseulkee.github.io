@@ -61,9 +61,9 @@ sidebar:
     <div class="post-comments">
       {%- if page.comments != false -%}
 
-      {%- if site.disqus.shortname -%}
+      <!-- {%- if site.disqus.shortname -%}
       {%- include extensions/comments/disqus.html -%}
-      {%- endif -%}
+      {%- endif -%} -->
 
       {%- if site.gitment.username -%}
       {%- include extensions/comments/gitment.html -%}
@@ -75,6 +75,14 @@ sidebar:
 
       {%- endif -%}
     </div>
+    <script src="https://utteranc.es/client.js"
+        repo="parkseulkee/blog-comments"
+        issue-term="pathname"
+        label="comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+    </script>
     {%- endif -%}
 
   </section>
