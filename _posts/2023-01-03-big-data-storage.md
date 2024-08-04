@@ -8,8 +8,7 @@ tags: [bigdata]
 본 글은 [Data Warehouse vs. Data Lake vs. Data Lakehouse: An Overview of Three Cloud Data Storage Patterns](https://www.striim.com/blog/data-warehouse-vs-data-lake-vs-data-lakehouse-an-overview/) 을 번역 및 정리하였습니다.
 
 `Data Warehouse` 와 `Data Lake`는 빅 데이터에 가장 널리 사용되는 스토리지 아키텍처이다.
-**Data Lakehouse는 Data Lake 의 유연성과 Data Warehouse의 데이터 관리를 결합한 새로운 데이터 스토리지 아키텍처라고 이해할 수 있다.
-**
+**Data Lakehouse는 Data Lake 의 유연성과 Data Warehouse의 데이터 관리를 결합한 새로운 데이터 스토리지 아키텍처라고 이해할 수 있다.**
 회사의 요구 사항에 따라 다양한 빅 데이터 스토리지 기술을 이해하는 것은 BI, ML 등 워크로드를 위한 강력한 데이터 스토리지 파이프라인을 개발하는 데 도움이 되므로 본 글에서는 각 3가지 아키텍처에 대해 간단하게 이해하고 비교해보도록 한다.
 
 ## What is a Data Warehouse?
