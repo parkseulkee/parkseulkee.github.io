@@ -5,7 +5,7 @@ const talks = [
   { date: '2023.11', title: '데이터 품질 이슈로 발생하는 data downtime을 줄이자', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/5766317' },
   { date: '2024.08', title: 'LLMOps를 위한 프롬프트 엔지니어링 도구 개발 경험기', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/3344073' },
   { date: '2025.04', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈)', subtitle: 'ㄴ 생산성 2배 프로젝트: MCP로 일도 정보도 더 스마트하게', venue: 'Tech Meetup · 사내 공유 · 연사' },
-  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '저술 · 위키북스', link: 'https://www.yes24.com/product/goods/145341599' },
+  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '저술 · 위키북스', link: 'https://www.yes24.com/product/goods/145341599', image: '/images/book-llmops.jpg' },
 ];
 
 const projects = [
@@ -176,16 +176,23 @@ const skills = [
         {talks.map((talk, i) => (
           <div class:list={['flex items-start gap-4 p-4', i > 0 && 'border-t border-gray-50']}>
             <span class="text-xs text-gray-400 font-mono whitespace-nowrap mt-0.5 w-16 shrink-0">{talk.date}</span>
-            <div class="flex-1 min-w-0">
-              {talk.link ? (
-                <a href={talk.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent transition-colors">{talk.title} ↗</a>
-              ) : (
-                <p class="text-sm font-medium text-gray-800">{talk.title}</p>
+            <div class="flex-1 min-w-0 flex items-start gap-4">
+              {talk.image && (
+                <a href={talk.link} target="_blank" rel="noopener" class="shrink-0">
+                  <img src={talk.image} alt={talk.title} class="w-14 rounded shadow-sm border border-gray-100 hover:opacity-90 transition-opacity" />
+                </a>
               )}
-              {talk.subtitle && (
-                <p class="text-sm text-gray-500 mt-0.5">{talk.subtitle}</p>
-              )}
-              <p class="text-xs text-gray-400 mt-0.5">{talk.venue}</p>
+              <div class="flex-1 min-w-0">
+                {talk.link ? (
+                  <a href={talk.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent transition-colors">{talk.title} ↗</a>
+                ) : (
+                  <p class="text-sm font-medium text-gray-800">{talk.title}</p>
+                )}
+                {talk.subtitle && (
+                  <p class="text-sm text-gray-500 mt-0.5">{talk.subtitle}</p>
+                )}
+                <p class="text-xs text-gray-400 mt-0.5">{talk.venue}</p>
+              </div>
             </div>
           </div>
         ))}
