@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="데이터 품질 및 옵저버빌리티 구축 — SLVIS">
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <div class="flex items-center gap-2 text-sm text-gray-400 mb-4">
+        <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium text-xs">프로젝트</span>
+        <span>·</span>
+        <span>네이버</span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-3">
+        ✅ 데이터 품질 및 옵저버빌리티 구축
+      </h1>
+      <div class="flex flex-wrap gap-2 mt-4">
+        {['Great Expectations', 'Airflow', 'Spark', 'Datahub'].map(t => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="prose max-w-none">
+      <h2>프로젝트 소개</h2>
+      <p>데이터 파이프라인의 품질을 체계적으로 관리하고, 이상 상황을 조기에 발견할 수 있는 옵저버빌리티 환경을 구축한 프로젝트입니다.</p>
+
+      <h2>데이터 신선도 및 품질 측정</h2>
+      <ul>
+        <li><strong>Great Expectations</strong>를 활용해 주요 데이터 테이블의 컬럼 수준 품질 점검 및 자동화된 검증 수행</li>
+        <li>Airflow 환경에서 <strong>재사용 가능한 공통 Operator</strong>로 구현하여 파이프라인 내 유연한 적용 가능</li>
+        <li>팀원들이 손쉽게 활용할 수 있도록 설정 템플릿 및 활용 가이드 문서화</li>
+        <li>주기적 실행을 통해 입력 소스 또는 처리 과정의 문제 조기 발견</li>
+      </ul>
+
+      <h2>데이터 볼륨 이상 탐지</h2>
+      <ul>
+        <li>Airflow + Spark 기반의 데이터 양 이상치 감지 로직 구현</li>
+        <li>주기적 실행을 통해 입력 소스 또는 처리 과정의 문제 조기 발견</li>
+      </ul>
+
+      <h2>데이터 리니지 및 메타데이터 관리</h2>
+      <ul>
+        <li><strong>Datahub 도입</strong>을 통해 테이블 간 리니지를 추적 가능하게 구축</li>
+        <li>구성원들이 데이터 흐름을 직관적으로 파악할 수 있는 환경 조성</li>
+      </ul>
+
+      <h2>모니터링 및 알림</h2>
+      <ul>
+        <li>품질 검증 결과를 웍스, 메일 등 사내 알림 시스템과 연동하여 실시간 대응 체계 마련</li>
+      </ul>
+
+      <h2>외부 기술 공유</h2>
+      <p>관련 경험을 정리하여 <a href="https://d2.naver.com/helloworld/5766317" target="_blank" rel="noopener">「데이터 품질 이슈로 발생하는 data downtime을 줄이자」</a> 글을 D2&NE에 공유했습니다.</p>
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-gray-100">
+      <a href="/about" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        About으로 돌아가기
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

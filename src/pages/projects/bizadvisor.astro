@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="BizAdvisor — SLVIS">
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <div class="flex items-center gap-2 text-sm text-gray-400 mb-4">
+        <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium text-xs">프로젝트</span>
+        <span>·</span>
+        <span>네이버</span>
+        <span>·</span>
+        <a href="https://bizadvisor.naver.com/" target="_blank" rel="noopener" class="text-primary hover:text-accent">bizadvisor.naver.com ↗</a>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-3">
+        📈 BizAdvisor (스마트스토어 통계 데이터 제공)
+      </h1>
+      <p class="text-gray-500 text-lg">바쁜 사업자들을 위한 똑똑한 사이트 통계 서비스</p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        {['Spark', 'Elasticsearch', 'Airflow', 'SQL'].map(t => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    </header>
+
+    <!-- Hero 이미지 -->
+    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm mb-10">
+      <img
+        src="https://bizadvisor.naver.com/biz_iframe/assets/img_front_slide5_1.png"
+        alt="BizAdvisor 스코어카드 — 사업 현황을 종합적으로 한눈에 파악"
+        class="w-full"
+      />
+    </div>
+
+    <div class="prose max-w-none">
+      <h2>프로젝트 소개</h2>
+      <p>
+        <strong>비즈어드바이저(BizAdvisor)</strong>는 온라인 사업자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스입니다.
+        고객이 어디에서 오는지, 어떤 행동을 하는지에 대한 정확한 이해를 통해 마케팅 효과를 향상시키고, 온라인 비즈니스를 효율적으로 관리할 수 있습니다.
+      </p>
+
+      <h2>핵심 기능</h2>
+
+      <h3>종합적인 사업 정보 제공</h3>
+      <p>온라인 사업을 이해하는 데 필요한 모든 정보를 종합적으로 제공합니다.</p>
+
+      <h3>상세한 마케팅채널 정보</h3>
+      <p>별다른 설정 없이도 우리나라의 현실에 맞는 상세한 마케팅채널 종류를 제공합니다. 특히 네이버쇼핑 관련 마케팅채널들을 상세히 제공합니다.</p>
+      <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+        <img
+          src="https://bizadvisor.naver.com/biz_iframe/assets/img_front_slide1_1.png"
+          alt="국내외의 검색, 광고, 소셜 관련 다양한 마케팅채널들 제공"
+          class="w-full"
+          style="margin:0;"
+        />
+      </div>
+
+      <h3>E-commerce 환경에 최적화</h3>
+      <p>개별 상품 구매에 영향을 미치는 검색어, 마케팅채널 정보를 제공합니다. 여러 개의 단말기를 사용하여도 한 명으로 추적합니다.</p>
+      <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+        <img
+          src="https://bizadvisor.naver.com/biz_iframe/assets/img_front_slide2_1.png"
+          alt="상품결제에 기여한 검색어들에 대한 정보를 정량적으로 제공"
+          class="w-full"
+          style="margin:0;"
+        />
+      </div>
+
+      <h3>다양한 고객속성별 정보</h3>
+      <p>성별, 나이뿐만 아니라 결혼여부, 가구인원수, 직업, 자녀여부에 대한 정보를 추정하여 제공합니다.</p>
+      <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+        <img
+          src="https://bizadvisor.naver.com/biz_iframe/assets/img_front_slide3_1.png"
+          alt="고객이 결제한 상품에 대한 정보를 고객의 성별/나이별로 제공"
+          class="w-full"
+          style="margin:0;"
+        />
+      </div>
+
+      <h3>실시간 사업성과 확인</h3>
+      <p>오늘의 사업성과를 실시간으로 제공하여, 사업성과 및 마케팅성과를 빠르게 확인할 수 있습니다.</p>
+      <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+        <img
+          src="https://bizadvisor.naver.com/biz_iframe/assets/img_front_slide4_1.png"
+          alt="오늘의 시간대별 결제금액을 다른 날짜와 비교하여 확인 가능"
+          class="w-full"
+          style="margin:0;"
+        />
+      </div>
+
+      <h2>주요 기여</h2>
+      <ul>
+        <li>클릭, 결제 등 주요 지표 기반으로 사용자 의사결정 지원</li>
+        <li>다양한 통계 집계 로직과 시나리오에 따른 데이터 가공 처리</li>
+        <li>성능 개선 및 운영 자동화로 안정적 서비스 제공</li>
+      </ul>
+
+      <h2>성과</h2>
+      <ul>
+        <li><strong>스마트스토어센터 대시보드</strong>에 활용됨</li>
+        <li>중간 집계 데이터를 사내 유통하여 <strong>신규 프로덕트 기획</strong>, <strong>마케팅/운영 전략 수립</strong> 등 다양한 실무 활용에 기여</li>
+        <li>내부 데이터 소비자들이 직접 쿼리하지 않아도 되는 표준화된 통계 데이터 제공</li>
+      </ul>
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-gray-100">
+      <a href="/about" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        About으로 돌아가기
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

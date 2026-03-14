@@ -56,7 +56,7 @@ maven
 
 sbt
 
-```sbt
+```bash
 libraryDependencies += "com.amazon.deequ" % "deequ" % "2.0.0-spark-3.1"
 ```
 
@@ -161,7 +161,7 @@ val resultDataFrame = checkResultsAsDataFrame(spark, verificationResult)
 - 데이터 분포를 기반으로 유용한 제약 조건을 자동으로 제안
 - 내부에서는 [데이터 프로파일링](https://github.com/awslabs/deequ/blob/master/src/main/scala/com/amazon/deequ/examples/data_profiling_example.md)을 진행한 후에 일련의 조건을 기반으로 제안하는 형식
 
-```spark
+```python
 import com.amazon.deequ.suggestions.{ConstraintSuggestionRunner, Rules}
 import spark.implicits._ // for toDS method
 
@@ -191,7 +191,7 @@ val suggestionDataFrame = suggestionResult.constraintSuggestions.flatMap {
 
 #### 제안된 제약 조건으로 Test 진행
 
-```spark
+```python
 val allConstraints = suggestionResult.constraintSuggestions
       .flatMap { case (_, suggestions) => suggestions.map { _.constraint }}
       .toSeq

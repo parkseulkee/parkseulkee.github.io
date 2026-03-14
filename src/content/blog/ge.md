@@ -33,7 +33,7 @@ tags: [observability]
 - python 3
 - pip 
 
-```cmd
+```bash
 $ pip install great_expectations
 ```
 
@@ -50,7 +50,7 @@ $ pip install great_expectations
 - 프로젝트 디렉토리 내에서 `great_expectations init` 를 실행 (git init 과 비슷)
     - 프로젝트 내에 great_expectations 디렉토리가 생성되고, 하위에 필요한 디렉토리 및 구성 파일을 구축
 
-```cmd
+```bash
 $ great_expectations init
 Great Expectations will create a new directory with the following structure:
     great_expectations
@@ -72,7 +72,7 @@ Great Expectations will create a new directory with the following structure:
     - 데이터 처리 방식 (pandas / pyspark)
     - 데이터 경로
     
-```cmd
+```bash
 
 $ great_expectations datasource new
  
@@ -132,7 +132,7 @@ datasources:
     - `Expectation Suite` 란 Expectation의 모음이다
     - 아래는 프로파일러를 통해 자동 Expectation 을 생성하는 예를 보여준다
 
-```cmd
+```bash
 $ great_expectations suite new
  
 How would you like to create your Expectation Suite?
@@ -151,7 +151,7 @@ Which data asset (accessible by data connector "default_inferred_data_connector_
 ```
 
 여기까지 진행했다면 Expectation Suite 의 이름을 작성하면된다. 여기서는 `test.demo` 라 하겠다.
-```cmd
+```bash
 Name the new Expectation Suite [yellow_tripdata_2019-01.csv.warning]: test.demo
 ```
 
@@ -192,13 +192,13 @@ Expectation Suite를 생성하여 실행되는 Notebook 파일은 총 네 개의
 
 하지만 중앙값이 정확히 얼마가 나와야 한다던가, 데이터의 행 갯수가 정확히 몇 개여야 한다던가하는 불필요한 Expectations은 삭제하거나 수정할 필요가 있다. Expectation Suite를 수정하기 위해선 다음 명령어를 실행해야한다.
 
-```cmd
+```bash
 $ great_expectations suite edit test.demo
 ```
 
 그러면 Expectation Suite를 어떤 방법으로 수정할건지 물어보는 메시지가 출력되는데 본 포스팅에서는 1번을 선택했다.
 
-```cmd
+```bash
 Using v3 (Batch Request) API
 
 How would you like to edit your Expectation Suite?
@@ -281,7 +281,7 @@ How would you like to edit your Expectation Suite?
 - 데이터 배치에 대해 Expectation Suite를 실행하여 검증 결과를 생성
 
 우선 터미널에서 아래 명령어를 입력하여 Checkpoint 를 생성한다.
-```cmd
+```bash
 $ great_expectations checkpoint new test_checkpoint
 ```
 

@@ -14,14 +14,14 @@ tags: [k8s]
 ### 모든 Node 공통 작업
 - yum update
 
-```cmd
+```bash
 $ sudo yum update -y
 ```
 - SELINUX = permissive 설정
     - /etc/sysconfig/selinux 파일을 열고 SELINUX=permissive 로 수정
     - 통신 문제 방지
     
-```cmd
+```bash
 $ vi /etc/sysconfig/selinux
 ```
 
@@ -29,7 +29,7 @@ $ vi /etc/sysconfig/selinux
     - /ect/sysctl.d/k8s.conf 파일에서 ip6tables 관련 설정을 변경해주고 적용
     - 참고) 만약 sysctl 커맨드를 찾을 수 없다면, .bash_profile 파일을 열고 PATH 끝에 :/sbin/ 추가
     
-```cmd
+```bash
 $ sudo bash -c 'cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -46,7 +46,7 @@ $ source .bash_profile
 
 - swap 설정을 끔
 
-```cmd
+```bash
 $ sudo blkid
 $ sudo swapoff /dev/mapper/centos-swap
 $ sudo swapoff -a
@@ -54,7 +54,7 @@ $ sudo swapoff -a
 
 - Docker 설치 및 활성화
 
-```cmd
+```bash
 # 도커 설치
 $ sudo yum install -y docker
 # 도커 활성화
@@ -65,7 +65,7 @@ $ sudo docker version
 
 - Kubernetes 설치
 
-```cmd
+```bash
 # kubernetes 최신 패키지를 사용하기위해 yum repository 구성
 # kubernetes yum repository 를 구성하기 위한 설정 파일 작성
 $ sudo bash -c 'cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -91,7 +91,7 @@ $ sudo systemctl enable kubelet && sudo systemctl start kubelet
 - Firewall 설정
     - 6443, 10250 포트를 방화벽에서 오픈하도록 설정
     
-```cmd
+```bash
 $ sudo firewall-cmd --permanent --add-port=6443/tcp && sudo firewall-cmd --permanent --add-port=10250/tcp && sudo firewall-cmd --reload
 
 >> 안되면, firewall service 상태를 확인해보고 running 상태가 아니라면 restart 또는 start
@@ -104,7 +104,7 @@ $ systemctl enable firewalld
     - 만약 위의 어느 단계를 빼먹었다면 init 이 제대로 되지않음. 그럴땐 조치 후 sudo kubeadm reset 을 한 뒤에 다시 init.
     - (중요) 이때 kubeadm join ~ 으로 시작하는 조인 명령어를 꼭 따로 메모해둘것
     
-```cmd
+```bash
 $ sudo kubeadm config images pull
 $ sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
@@ -130,7 +130,7 @@ kubeadm join 10.0.0.1:6443 --token kvdhws.yt91a4da9ec3756h \
 
 - kubenetes 클러스터에 로컬로 액세스 할 수 있도록, 사용할 OS 유저에 설정 추가 (위 출력에 나와있는 3가지 command 실행)
 
-```cmd
+```bash
 $ mkdir -p $HOME/.kube
 $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -141,7 +141,7 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 - kubeadm 초기화
     - master node init 시에 출력된 kubeadm join 명령어 복붙하여 실행
     
-```cmd
+```bash
 $ sudo kubeadm join 10.0.0.1:6443 --token kvdhws.yt91a4da9ec3756h --discovery-token-ca-cert-hash sha256:ddf9f69fd9ad837ad3cb6db297334a7ef5c3cb0be1d4bfa53773faea1ad5cba3
 
 [preflight] Running pre-flight checks
@@ -163,7 +163,7 @@ Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 
 - master node 에서 잘 붙었나 확인
 
-```cmd
+```bash
 $ kubectl get nodes
 NAME                 STATUS     ROLES                  AGE     VERSION
 dev-psk-k8s001-ncl   NotReady   control-plane,master   6m33s   v1.23.1
@@ -183,7 +183,7 @@ kube-system   kube-scheduler-dev-psk-k8s001-ncl            1/1     Running   0  
 
 - node status가 NotReady 이고 coredns-* pod가 pending 상태일 때
 
-```cmd
+```bash
 # https://nirsa.tistory.com/292 참고해서 해결
 # 아래 명령어를 입력하여 24라인의 loop 부분을 주석 처리
 $ kubectl edit cm coredns -n kube-system
@@ -214,7 +214,7 @@ kube-system   kube-scheduler-dev-psk-k8s001-ncl            1/1     Running   0  
 
 ### 나머지 worker node도 동일하게 붙이고, master node에서 확인
 
-```cmd
+```bash
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE   VERSION
 dev-k8s001-ncl   Ready    control-plane,master   21m   v1.23.1

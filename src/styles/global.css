@@ -19,46 +19,162 @@
   }
 }
 
-/* Blog post content styling */
+/* Blog post content styling — use raw CSS to override Tailwind base reset */
 .prose {
-  @apply text-gray-700 leading-relaxed;
+  color: #374151;
+  font-size: 1.05rem;
+  line-height: 1.9;
 }
-.prose h1 { @apply text-3xl font-bold mt-10 mb-4 text-gray-900; }
-.prose h2 { @apply text-2xl font-bold mt-8 mb-3 text-gray-900; }
-.prose h3 { @apply text-xl font-bold mt-6 mb-2 text-gray-900; }
-.prose p { @apply my-4; }
-.prose ul { @apply list-disc pl-6 my-4 space-y-1; }
-.prose ol { @apply list-decimal pl-6 my-4 space-y-1; }
-.prose li { @apply text-gray-700; }
+.prose h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+.prose h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+.prose p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.75rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.75rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.prose li {
+  color: #374151;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.85;
+}
+.prose li::marker {
+  color: #9ca3af;
+}
+.prose li > ul {
+  list-style-type: circle;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.prose li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.prose li > p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
 .prose blockquote {
-  @apply border-l-4 border-accent pl-4 my-4 italic text-gray-600 bg-blue-50 py-2 pr-4 rounded-r-lg;
+  border-left: 4px solid #61dafb;
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  color: #4b5563;
+  background: #eff6ff;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: italic;
+}
+.prose blockquote p {
+  margin: 0.5rem 0;
 }
 .prose code {
-  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-pink-600;
+  background: #f3f4f6;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #db2777;
 }
 .prose pre {
-  @apply bg-gray-50 rounded-xl p-4 my-6 overflow-x-auto border border-gray-200;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 2rem 0;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  line-height: 1.6;
 }
 .prose pre code {
-  @apply bg-transparent px-0 py-0 text-gray-800;
+  background: transparent;
+  padding: 0;
+  color: #1f2937;
+  font-size: 0.875rem;
 }
 .prose img {
-  @apply rounded-xl my-6 shadow-sm;
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .prose a {
-  @apply text-primary hover:text-accent underline decoration-primary/30 hover:decoration-accent/50 transition-all;
+  color: #3b82f6;
+  text-decoration: underline;
+  text-decoration-color: rgba(59,130,246,0.3);
+  transition: all 0.2s;
+}
+.prose a:hover {
+  color: #61dafb;
+  text-decoration-color: rgba(97,218,251,0.5);
 }
 .prose strong {
-  @apply font-bold text-gray-900;
+  font-weight: 700;
+  color: #111827;
+}
+.prose em {
+  font-style: italic;
+}
+.prose del {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+.prose hr {
+  margin: 2.5rem 0;
+  border-color: #e5e7eb;
 }
 .prose table {
-  @apply w-full my-4 border-collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
 }
 .prose th {
-  @apply bg-gray-50 border border-gray-200 px-4 py-2 text-left font-semibold;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 .prose td {
-  @apply border border-gray-200 px-4 py-2;
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
 }
 
 /* Speech bubble animation */

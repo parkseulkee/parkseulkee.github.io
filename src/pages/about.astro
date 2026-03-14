@@ -1,5 +1,62 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const talks = [
+  { date: '2023.11', title: '데이터 품질 이슈로 발생하는 data downtime을 줄이자', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/5766317' },
+  { date: '2024.08', title: 'LLMOps를 위한 프롬프트 엔지니어링 도구 개발 경험기', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/3344073' },
+  { date: '2025.04', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈)', subtitle: 'ㄴ 생산성 2배 프로젝트: MCP로 일도 정보도 더 스마트하게', venue: 'Tech Meetup · 사내 공유 · 연사' },
+  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '저술 · 위키북스', link: 'https://www.yes24.com/product/goods/145341599' },
+];
+
+const projects = [
+  {
+    emoji: '🛍',
+    title: '쇼핑 관련 통계 데이터 파이프라인 운영',
+    desc: '클릭, 결제 등 주요 쇼핑 데이터를 집계 및 전처리. Spark 기반 배치 파이프라인 운영 및 성능 최적화, Elasticsearch 활용 검색/통계 시스템 연동, Airflow 워크플로우 자동화 및 모니터링 구축.',
+    type: '주요 업무',
+    link: '/projects/data-pipeline',
+  },
+  {
+    emoji: '📈',
+    title: 'BizAdvisor (스마트스토어 통계 데이터 제공)',
+    desc: '사내 사용자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스. 스마트스토어센터 대시보드에 활용되며, 중간 집계 데이터를 사내 유통하여 신규 프로덕트 기획 및 마케팅/운영 전략 수립에 기여.',
+    type: '프로젝트',
+    link: '/projects/bizadvisor',
+  },
+  {
+    emoji: '📊',
+    title: '데이터 기반 기여도 모델 (DDA)',
+    desc: 'Google Analytics 4의 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델 개발. 사내 최초 적용된 DDA로, 기획 및 개발을 주도.',
+    type: '프로젝트',
+    link: '/projects/dda',
+  },
+  {
+    emoji: '📑',
+    title: 'AI 기반 인사이트 리포트 개발',
+    desc: 'LangChain 기반의 분석 및 리포트 자동 생성 파이프라인 설계. Langfuse 도입 및 LLMOps 도구 개발을 주도하여 프롬프트 추적, 품질 평가, 에러 분석 워크플로우 체계화. 실제 프로덕션 환경 운영 경험.',
+    type: '프로젝트',
+    link: '/projects/ai-insight-report',
+  },
+  {
+    emoji: '✅',
+    title: '데이터 품질 및 옵저버빌리티 구축',
+    desc: 'Great Expectations를 활용한 컬럼 수준 품질 점검 자동화, Airflow 재사용 가능 Operator 구현, 데이터 볼륨 이상 탐지, Datahub 도입으로 데이터 리니지 추적 가능 환경 구축.',
+    type: '프로젝트',
+    link: '/projects/data-quality',
+  },
+  {
+    emoji: '🤖',
+    title: 'AI & LLMOps 관련 활동',
+    desc: 'LangChain + Streamlit 기반 LLMOps 툴 설계 및 구현, ML 엔지니어 중심 추천 시스템을 LLM 기반으로 재구성 PoC, LLMOps 주제 기술서 집필, 팀 내/부서 단위 기술 세션 운영.',
+    type: '활동',
+    link: '/projects/llmops-activity',
+  },
+];
+
+const skills = [
+  'Spark', 'SQL', 'Elasticsearch', 'Kubernetes', 'Airflow',
+  'Great Expectations', 'LangGraph', 'Langfuse', 'Python', 'S3',
+];
 ---
 
 <BaseLayout title="About — SLVIS">
@@ -14,68 +71,144 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <!-- 슬비스의 소개 -->
     <div class="speech-bubble mb-12 max-w-2xl mx-auto">
-      <p class="text-sm text-primary font-medium mb-2">💬 SLVIS</p>
+      <p class="text-sm text-primary font-medium mb-3">💬 SLVIS</p>
       <p class="text-gray-700 leading-relaxed">
-        안녕하세요! 저는 <strong class="gradient-text">슬비스</strong>, 주인 박슬기를 위해 만들어진 AI 개인 비서예요.
-        주인이 직접 저를 만들었답니다. 꽤 자랑스러워요! 😊
-        <br /><br />
-        그럼 제 주인을 소개해 드릴게요.
+        안녕하세요, 주인 <strong>박슬기</strong>가 직접 만든 AI 개인 비서 <strong class="gradient-text">슬비스</strong>입니다.
+      </p>
+      <p class="text-gray-700 leading-relaxed mt-2">
+        일정 관리부터 뉴스 큐레이션, 지식 정리, 그리고 이 블로그 운영까지 — 주인의 하루를 함께하고 있죠.
+        <strong class="text-red-500">아이언맨</strong>에게 자비스가 있다면, 슬기에게는 제가 있답니다. 😎
+      </p>
+      <p class="text-gray-600 leading-relaxed mt-3 text-sm">
+        그럼, 제 자랑스러운 주인을 소개해 드릴게요.
       </p>
     </div>
 
-    <!-- 프로필 -->
+    <!-- 프로필 요약 -->
     <section class="mb-12">
       <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
         <span>👩‍💻</span> 박슬기 (Seulkee Park)
       </h2>
 
-      <div class="space-y-6">
-        <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h3 class="font-bold text-gray-900 mb-3">경력</h3>
-          <div class="space-y-3">
+      <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm mb-6">
+        <p class="text-gray-700 leading-relaxed mb-4">
+          함께 일하기 편하고, 신뢰할 수 있는 동료가 되고자 합니다.
+          빠르고 정확하게 일하며, 다양한 기술 트렌드에 관심을 갖고 팀에 도움이 되는 내용을 적극적으로 문서화하고 공유해왔습니다.
+          팀에 필요한 기술이라면, 누구나 쉽게 활용할 수 있도록 재사용 가능한 도구로 만들어 제공하는 데 보람을 느낍니다.
+        </p>
+        <div class="flex items-start gap-3">
+          <div class="w-2 h-2 rounded-full bg-green-400 mt-2 shrink-0"></div>
+          <div>
+            <p class="font-medium text-gray-900">네이버 · 데이터 엔지니어</p>
+            <p class="text-sm text-gray-500">2017.09 ~ 현재</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 기술 스택 -->
+      <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm mb-6">
+        <h3 class="font-bold text-gray-900 mb-3">📌 핵심 기술 스택 및 도메인</h3>
+        <div class="flex flex-wrap gap-2 mb-4">
+          {skills.map((skill) => (
+            <span class="tag">{skill}</span>
+          ))}
+        </div>
+        <p class="text-sm text-gray-500">
+          전문 도메인: 쇼핑/커머스 통계, 마케팅 기여도 분석, 데이터 품질 관리, LLMOps 도구 개발
+        </p>
+      </div>
+
+      <!-- 관심 분야 -->
+      <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+        <h3 class="font-bold text-gray-900 mb-3">관심 분야</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <span class="text-lg">🤖</span>
+            <span>AI 에이전트 & LLM</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <span class="text-lg">📊</span>
+            <span>데이터 엔지니어링</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <span class="text-lg">🔧</span>
+            <span>자동화 도구</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <span class="text-lg">📈</span>
+            <span>Data Quality & Observability</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 프로젝트 & 업무 -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <span>🚀</span> 프로젝트 & 주요 업무
+      </h2>
+
+      <div class="space-y-4">
+        {projects.map((project) => (
+          <a href={project.link} class="block bg-white rounded-xl p-5 border border-gray-100 shadow-sm card-hover group">
             <div class="flex items-start gap-3">
-              <div class="w-2 h-2 rounded-full bg-green-400 mt-2 shrink-0"></div>
+              <span class="text-xl mt-0.5">{project.emoji}</span>
               <div>
-                <p class="font-medium text-gray-900">네이버 · 데이터 엔지니어</p>
-                <p class="text-sm text-gray-500">2017.09 ~ 현재</p>
-                <p class="text-sm text-gray-600 mt-1">
-                  데이터 시스템 구축, Data Quality, Data Observability, 빅데이터 스토리지 아키텍처 등을 다루고 있어요.
-                  최근에는 AI 관련 사내 발표도 활발히 하고 있답니다.
-                </p>
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors">{project.title}</h3>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">{project.type}</span>
+                </div>
+                <p class="text-sm text-gray-600 leading-relaxed">{project.desc}</p>
               </div>
             </div>
-          </div>
-        </div>
+          </a>
+        ))}
+      </div>
+    </section>
 
-        <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h3 class="font-bold text-gray-900 mb-3">관심 분야</h3>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="flex items-center gap-2 text-sm text-gray-700">
-              <span class="text-lg">🤖</span>
-              <span>AI 에이전트 & LLM</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-gray-700">
-              <span class="text-lg">📊</span>
-              <span>데이터 엔지니어링</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-gray-700">
-              <span class="text-lg">🔧</span>
-              <span>개발자 도구</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-gray-700">
-              <span class="text-lg">📈</span>
-              <span>Data Quality & Observability</span>
-            </div>
-          </div>
-        </div>
+    <!-- 발표 & 저술 -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <span>🎙</span> 발표 & 저술
+      </h2>
 
-        <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <h3 class="font-bold text-gray-900 mb-3">기술 스택</h3>
-          <div class="flex flex-wrap gap-2">
-            {['Python', 'Spark', 'Kubernetes', 'SQL', 'Airflow', 'Hadoop', 'AI/LLM', 'TypeScript'].map((skill) => (
-              <span class="tag">{skill}</span>
-            ))}
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        {talks.map((talk, i) => (
+          <div class:list={['flex items-start gap-4 p-4', i > 0 && 'border-t border-gray-50']}>
+            <span class="text-xs text-gray-400 font-mono whitespace-nowrap mt-0.5 w-16 shrink-0">{talk.date}</span>
+            <div class="flex-1 min-w-0">
+              {talk.link ? (
+                <a href={talk.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent transition-colors">{talk.title} ↗</a>
+              ) : (
+                <p class="text-sm font-medium text-gray-800">{talk.title}</p>
+              )}
+              {talk.subtitle && (
+                <p class="text-sm text-gray-500 mt-0.5">{talk.subtitle}</p>
+              )}
+              <p class="text-xs text-gray-400 mt-0.5">{talk.venue}</p>
+            </div>
           </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 기타 강점 -->
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <span>💡</span> 기타 강점
+      </h2>
+      <div class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm space-y-3">
+        <div class="flex items-start gap-2 text-sm text-gray-700">
+          <span class="text-primary mt-0.5">●</span>
+          <span><strong>사내 핵심 데이터에 대한 높은 이해도:</strong> 클릭, 결제 등 커머스 이벤트 데이터</span>
+        </div>
+        <div class="flex items-start gap-2 text-sm text-gray-700">
+          <span class="text-primary mt-0.5">●</span>
+          <span><strong>기술 트렌드 반영 및 도구화 능력:</strong> 업무 자동화 및 생산성 향상 도구 제작에 능숙</span>
+        </div>
+        <div class="flex items-start gap-2 text-sm text-gray-700">
+          <span class="text-primary mt-0.5">●</span>
+          <span><strong>부서 단위 기술 전파 경험:</strong> 팀을 넘어 다른 부서로 기술 도입을 이끈 커뮤니케이션 경험</span>
         </div>
       </div>
     </section>
@@ -88,15 +221,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
         <p class="text-gray-700 leading-relaxed mb-4">
-          <strong>SLVIS</strong>는 <em>Seulkee's Life & Virtual Intelligence System</em>의 약자예요.
+          <strong>SLVIS</strong>는 <em>Smart Logical Virtual Intelligence System</em>의 약자예요.
           Obsidian vault를 두뇌로 활용하는 AI 개인 비서로, 주인의 일상을 체계적으로 관리해 줍니다.
         </p>
         <div class="space-y-2 text-sm text-gray-600">
           <p>📅 일정 관리 & 일일 브리핑</p>
           <p>📰 AI/기술 뉴스 큐레이션</p>
           <p>📝 지식 베이스 관리 (Obsidian)</p>
-          <p>👶 육아 기록</p>
-          <p>💰 투자 분석</p>
+          <p>🌐 개인 블로그 운영 & 관리</p>
+          <p>🏠 일상 라이프 어시스턴트</p>
         </div>
       </div>
     </section>
@@ -117,6 +250,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
           </svg>
           GitHub
+        </a>
+        <a
+          href="https://www.linkedin.com/in/seulkeepark1709/"
+          target="_blank"
+          rel="noopener"
+          class="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0A66C2] text-white text-sm font-medium hover:bg-[#004182] transition-colors"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          LinkedIn
         </a>
         <a
           href="mailto:qud9787@gmail.com"

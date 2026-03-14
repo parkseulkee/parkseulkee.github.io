@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="쇼핑 관련 통계 데이터 파이프라인 운영 — SLVIS">
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <div class="flex items-center gap-2 text-sm text-gray-400 mb-4">
+        <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium text-xs">주요 업무</span>
+        <span>·</span>
+        <span>네이버</span>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 leading-tight mb-3">
+        🛍 쇼핑 관련 통계 데이터 파이프라인 운영
+      </h1>
+      <div class="flex flex-wrap gap-2 mt-4">
+        {['Spark', 'SQL', 'Elasticsearch', 'Airflow', 'S3'].map(t => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="prose max-w-none">
+      <h2>개요</h2>
+      <p>네이버 쇼핑 서비스의 클릭, 결제 등 주요 쇼핑 이벤트 데이터를 집계·전처리하여 다양한 내부 서비스와 통계 시스템에 안정적으로 제공하는 데이터 파이프라인을 운영하고 있습니다.</p>
+
+      <h2>주요 업무</h2>
+      <ul>
+        <li><strong>Spark 기반 배치 파이프라인 운영 및 성능 최적화</strong>
+          <ul>
+            <li>대규모 쇼핑 이벤트 데이터의 일/시간 단위 집계 처리</li>
+            <li>파이프라인 병목 분석 및 쿼리/파티셔닝 최적화를 통한 처리 성능 개선</li>
+          </ul>
+        </li>
+        <li><strong>Elasticsearch를 활용한 검색/통계 시스템 연동</strong>
+          <ul>
+            <li>집계된 통계 데이터를 Elasticsearch에 인덱싱하여 실시간 검색·대시보드 서비스 지원</li>
+          </ul>
+        </li>
+        <li><strong>Airflow를 통한 워크플로우 자동화 및 모니터링 구축</strong>
+          <ul>
+            <li>데이터 파이프라인의 스케줄링, 의존성 관리, 실패 알림 자동화</li>
+            <li>데이터 품질 점검 태스크를 파이프라인에 통합하여 이상 데이터 조기 발견</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>핵심 데이터</h2>
+      <ul>
+        <li>클릭 이벤트 데이터 (상품 조회, 검색, 카테고리 탐색 등)</li>
+        <li>결제 이벤트 데이터 (주문, 결제 완료, 취소/환불 등)</li>
+        <li>커머스 통계 지표 (전환율, 객단가, GMV 등)</li>
+      </ul>
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-gray-100">
+      <a href="/about" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        About으로 돌아가기
+      </a>
+    </footer>
+  </article>
+</BaseLayout>
