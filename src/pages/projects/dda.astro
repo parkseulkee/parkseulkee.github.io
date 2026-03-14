@@ -22,85 +22,134 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
     <div class="prose max-w-none">
       <h2>프로젝트 소개</h2>
-      <p>Google Analytics 4의 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델을 개발한 프로젝트입니다.</p>
-
-      <h2>Data-Driven Attribution이란?</h2>
       <p>
-        DDA(Data-Driven Attribution)는 마케팅 터치포인트에 <strong>알고리즘적으로 부분 기여도를 할당(Algorithmically assign fractional credit to marketing touchpoints)</strong>하는 모델입니다.
+        마케팅 채널별 기여도를 정량적으로 측정하기 위해, <strong>Markov Chain 모델</strong>과 게임 이론 기반의
+        <strong>Google Fractribution 모델(Shapley Value)</strong>을 직접 데이터로 비교 분석하여 네이버 쇼핑에 최적화된
+        DDA 모델을 선정·적용한 프로젝트입니다.
       </p>
       <p>
-        기존의 Last Click, First Click 등 규칙 기반 모델과 달리, DDA는 <strong>머신러닝 알고리즘</strong>을 사용하여 전환(converting)과 비전환(non-converting) 경로를 모두 평가합니다.
-        이를 통해 각 터치포인트가 실제로 전환에 기여한 정도를 데이터 기반으로 학습합니다.
+        당시 DDA 모델을 실데이터로 비교 분석한 자료 자체가 드문 상황에서, 두 모델의 이론적 특성과 실제 데이터 분석 결과를
+        함께 검토하여 객관적인 근거를 바탕으로 모델을 선정했습니다.
       </p>
 
-      <!-- GA4 Attribution 다이어그램 -->
-      <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-white p-4">
-        <img
-          src="https://storage.googleapis.com/support-kms-prod/IuuWhMDR18uJpQGWa5jmz5S7D6kqivWwW1Mb"
-          alt="Google Analytics 4 — Data-Driven Attribution 설정 화면"
-          class="w-full"
-          style="margin:0;"
-        />
-        <p class="text-xs text-gray-400 text-center mt-2">출처: Google Analytics Help — Get started with attribution</p>
-      </div>
+      <h2>배경: 왜 DDA인가?</h2>
+      <p>
+        기존의 Last Click, First Click 등 <strong>규칙 기반(Rule-based) 모델</strong>은 구현이 단순하지만,
+        실제 고객 여정의 복잡성을 반영하지 못합니다. 예를 들어 Last Click 모델은 전환 직전 채널에 기여도 100%를 부여하여
+        상단 퍼널(브랜드 인지, 탐색) 채널의 기여를 과소평가하는 구조적 한계가 있습니다.
+      </p>
+      <p>
+        DDA(Data-Driven Attribution)는 실제 전환·비전환 경로 데이터를 기반으로 각 터치포인트의 기여도를 알고리즘적으로
+        산출합니다. 채널 간 상호작용과 순서, 빈도를 반영하여 기여도를 공정하게 분배하는 것이 핵심입니다.
+      </p>
 
-      <h3>DDA의 핵심 동작 방식</h3>
-      <p>GA4의 공식 문서에 따르면, DDA 모델은 다음과 같은 요소들을 고려합니다:</p>
+      <h2>두 모델 비교 분석</h2>
+
+      <h3>① Markov Chain 모델</h3>
+      <p>
+        Markov Chain 모델은 고객 여정을 <strong>상태(state) 전이 확률 행렬(Transition Matrix)</strong>로 모델링합니다.
+        각 채널을 하나의 상태로 정의하고, 사용자가 한 채널에서 다른 채널로 이동할 확률을 실데이터로부터 추정합니다.
+      </p>
+      <p>
+        기여도는 <strong>제거 효과(Removal Effect)</strong>로 산출합니다. 특정 채널을 제거했을 때 전체 전환 확률이
+        얼마나 감소하는지를 측정하여 해당 채널의 기여도로 사용하는 방식입니다.
+      </p>
       <ul>
-        <li><strong>전환까지의 시간</strong> (time from key event)</li>
-        <li><strong>디바이스 유형</strong> (device type)</li>
-        <li><strong>광고 상호작용 횟수</strong> (number of ad interactions)</li>
-        <li><strong>광고 노출 순서</strong> (order of ad exposure)</li>
-        <li><strong>크리에이티브 에셋 유형</strong> (type of creative assets)</li>
+        <li><strong>장점</strong> — 채널 순서를 반영하므로 고객 여정의 흐름을 직관적으로 모델링 가능, 상대적으로 적은 데이터로도 안정적으로 작동</li>
+        <li><strong>단점</strong> — 접촉 빈도가 높은 채널에 기여도가 과도하게 집중되는 편향 발생 가능, Markov 가정(현재 상태만이 다음 상태에 영향)으로 인해 장기 경로 특성을 반영하기 어려움</li>
       </ul>
-      <p>
-        <strong>반사실적 접근법(Counterfactual approach)</strong>을 사용하여, 실제 일어난 것과 일어날 수 있었던 것을 비교함으로써 어떤 터치포인트가 전환을 이끌 가능성이 가장 높은지 판단합니다.
-      </p>
 
-      <h3>기존 모델과의 비교</h3>
+      <h3>② Google Fractribution 모델 (Shapley Value)</h3>
+      <p>
+        Google의 Fractribution 모델은 노벨 경제학상을 받은 <strong>협력 게임 이론(Cooperative Game Theory)의
+        Shapley Value</strong>를 마케팅 기여도 측정에 적용한 모델입니다.
+      </p>
+      <p>
+        Shapley Value는 각 채널(플레이어)이 가능한 모든 채널 조합(coalition)에 참여할 때 발생하는
+        <strong>한계 기여도(Marginal Contribution)의 평균</strong>으로 기여도를 산출합니다. 이는 수학적으로
+        효율성·대칭성·가산성·더미 플레이어 등 공정 배분의 4가지 공리를 만족하는 유일한 해법입니다.
+      </p>
+      <ul>
+        <li><strong>장점</strong> — 접촉 순서가 아닌 실제 기여 여부를 기반으로 평가하여 빈도 편향 해소, 수학적으로 증명된 공정성 보장, 사용자 단위 분수 기여도(fractional credit) 산출 가능</li>
+        <li><strong>단점</strong> — 채널 수(n)에 대해 2ⁿ의 연산 복잡도를 가지므로 채널 수가 많을수록 계산 비용 증가</li>
+      </ul>
+
+      <h3>모델 비교 요약</h3>
       <table>
         <thead>
           <tr>
-            <th>모델</th>
-            <th>기여도 할당 방식</th>
+            <th>항목</th>
+            <th>Markov Chain</th>
+            <th>Fractribution (Shapley Value)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Last Click</strong></td>
-            <td>마지막 터치포인트에 100% 할당</td>
+            <td><strong>기반 이론</strong></td>
+            <td>확률론적 상태 전이</td>
+            <td>협력 게임 이론</td>
           </tr>
           <tr>
-            <td><strong>First Click</strong></td>
-            <td>첫 번째 터치포인트에 100% 할당</td>
+            <td><strong>기여도 산출 방식</strong></td>
+            <td>제거 효과 (Removal Effect)</td>
+            <td>한계 기여도 평균 (Shapley Value)</td>
           </tr>
           <tr>
-            <td><strong>Linear</strong></td>
-            <td>모든 터치포인트에 균등 분배</td>
+            <td><strong>채널 순서 반영</strong></td>
+            <td>O (핵심 가정)</td>
+            <td>X (조합 기반)</td>
           </tr>
           <tr>
-            <td><strong>Data-Driven (DDA)</strong></td>
-            <td>ML 기반으로 실제 기여도에 따라 분배</td>
+            <td><strong>빈도 편향</strong></td>
+            <td>발생 가능</td>
+            <td>수학적으로 보정됨</td>
+          </tr>
+          <tr>
+            <td><strong>데이터 요구량</strong></td>
+            <td>상대적으로 적음</td>
+            <td>충분한 전환 데이터 필요</td>
+          </tr>
+          <tr>
+            <td><strong>연산 복잡도</strong></td>
+            <td>O(n) — 확장성 우수</td>
+            <td>O(2ⁿ) — 채널 수 증가 시 비용 증가</td>
           </tr>
         </tbody>
       </table>
 
       <h2>역할 및 기여</h2>
       <ul>
-        <li><strong>기획 및 개발을 주도</strong> — 기획부터 모델 설계, 구현까지 전 과정을 리딩</li>
-        <li>GA4의 DDA 알고리즘을 분석하고, 내부 쇼핑 데이터 특성에 맞게 재해석 및 커스터마이징</li>
-        <li>다양한 논문과 자료를 기반으로 2가지 모델을 비교 분석하여 객관적 결론 도출</li>
-        <li>한국어로 작성된 비교 아티클이 없는 상황에서, 직접 데이터를 분석하며 모델 특성 파악</li>
+        <li><strong>기획 및 개발 주도</strong> — 모델 선정 기준 수립부터 구현, 검증까지 전 과정 리딩</li>
+        <li>Markov Chain과 Fractribution 모델을 <strong>실제 네이버 쇼핑 데이터</strong>에 적용하여 채널별 기여도 분포, 편향 여부, 안정성을 직접 비교 분석</li>
+        <li>두 모델의 이론적 특성과 데이터 분석 결과를 종합하여 <strong>Fractribution 모델 채택</strong>이라는 결론을 객관적인 근거로 도출</li>
+        <li>내부 데이터 특성에 맞춰 Google Fractribution 알고리즘을 커스터마이징하여 적용</li>
       </ul>
+
+      <h2>최종 선택: Fractribution 모델</h2>
+      <p>
+        실데이터 분석 결과, Markov 모델은 접촉 빈도가 높은 채널(예: 리타겟팅 광고)에 기여도가 집중되는 경향이
+        관찰되었습니다. 반면 Fractribution 모델은 채널의 실질적인 한계 기여도를 공정하게 반영하여 보다 신뢰성 있는
+        결과를 보여주었습니다.
+      </p>
+      <p>
+        이론적 공정성과 실데이터 검증 결과를 종합하여 <strong>Google Fractribution(Shapley Value) 모델을 최종
+        채택</strong>했으며, 이를 Spark 기반으로 구현하여 네이버 쇼핑의 마케팅 기여도 측정에 적용했습니다.
+      </p>
 
       <h2>성과</h2>
       <ul>
-        <li><strong>사내 최초로 적용된 DDA 모델</strong></li>
-        <li>모두가 납득할 수 있는 결론을 도출하여 내부 마케팅 기여도 측정의 기반을 마련</li>
+        <li><strong>네이버 사내 최초 DDA 모델 도입</strong></li>
+        <li>이론과 데이터 분석을 결합한 근거 기반 모델 선정으로 내부 이해관계자들의 신뢰 확보</li>
+        <li>마케팅 채널별 기여도 측정의 기준을 마련하여 예산 배분 의사결정 지원</li>
       </ul>
 
       <blockquote>
-        <p>참고: <a href="https://support.google.com/analytics/answer/10596866?hl=en" target="_blank" rel="noopener">GA4 — Get started with attribution</a></p>
+        <p>
+          참고:
+          <a href="https://developers.google.com/ads-data-hub/guides/shapley" target="_blank" rel="noopener">Google Ads Data Hub — Shapley Value Analysis</a>
+          ·
+          <a href="https://github.com/google/fractribution" target="_blank" rel="noopener">GitHub — google/fractribution</a>
+        </p>
       </blockquote>
     </div>
 
