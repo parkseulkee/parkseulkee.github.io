@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#61dafb" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#61dafb" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#61dafb"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 글로우 (펄스) -->
+  <circle cx="100" cy="100" r="95" fill="url(#glow)">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- 외곽 링 (느린 역회전) -->
+  <g>
+    <circle cx="100" cy="100" r="80" fill="none" stroke="url(#ring)" stroke-width="2" opacity="0.6"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="-360 100 100" dur="20s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- 중간 링 (느린 정회전) -->
+  <g>
+    <circle cx="100" cy="100" r="70" fill="none" stroke="url(#ring)" stroke-width="1.5" opacity="0.4"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="15s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- 코어 -->
+  <circle cx="100" cy="100" r="45" fill="none" stroke="#61dafb" stroke-width="2.5" opacity="0.8">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="100" cy="100" r="35" fill="#0f172a" opacity="0.9"/>
+  <circle cx="100" cy="100" r="35" fill="url(#glow)"/>
+
+  <!-- 중앙 텍스트 -->
+  <text x="100" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#61dafb" letter-spacing="3" opacity="0.9">SLVIS
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- 장식 호 (정회전) -->
+  <g>
+    <path d="M 100 25 A 75 75 0 0 1 168 65" fill="none" stroke="#61dafb" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 168 135 A 75 75 0 0 1 100 175" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="12s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- 장식 호 (역회전) -->
+  <g>
+    <path d="M 32 65 A 75 75 0 0 1 100 25" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M 100 175 A 75 75 0 0 1 32 135" fill="none" stroke="#61dafb" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="-360 100 100" dur="10s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- 점 장식 (정회전) -->
+  <g>
+    <circle cx="100" cy="25" r="3" fill="#61dafb" opacity="0.9"/>
+    <circle cx="168" cy="135" r="2.5" fill="#818cf8" opacity="0.8"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="12s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- 점 장식 (역회전) -->
+  <g>
+    <circle cx="32" cy="65" r="2.5" fill="#3b82f6" opacity="0.8"/>
+    <circle cx="100" cy="175" r="3" fill="#61dafb" opacity="0.9"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="-360 100 100" dur="10s" repeatCount="indefinite"/>
+  </g>
+</svg>

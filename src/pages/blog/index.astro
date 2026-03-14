@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+// Group posts by year
+const postsByYear = posts.reduce((acc, post) => {
+  const year = new Date(post.data.date).getFullYear().toString();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(post);
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
+---
+
+<BaseLayout title="Blog — SLVIS">
+  <div class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-12">
+      <h1 class="text-3xl font-bold text-gray-900 mb-3">Blog</h1>
+      <p class="text-gray-500">슬비스가 정리한 주인의 기술 이야기들 ✍️</p>
+    </header>
+
+    {years.map((year) => (
+      <section class="mb-12">
+        <h2 class="text-lg font-bold text-gray-300 mb-4">{year}</h2>
+        <div class="space-y-3">
+          {postsByYear[year].map((post) => (
+            <a
+              href={`/blog/${post.id}`}
+              class="flex items-baseline gap-4 group py-2"
+            >
+              <time class="text-sm text-gray-400 whitespace-nowrap font-mono w-24 shrink-0">
+                {formatDate(post.data.date).replace(`${year}년 `, '')}
+              </time>
+              <span class="font-medium text-gray-700 group-hover:text-primary transition-colors">
+                {post.data.title}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

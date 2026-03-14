@@ -1,0 +1,66 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  date: string;
+  categories?: string;
+  tags?: string[];
+}
+
+const { title, subtitle, date, categories, tags } = Astro.props;
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+<BaseLayout title={`${title} — SLVIS`}>
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <div class="flex items-center gap-3 text-sm text-gray-400 mb-4">
+        <time datetime={date}>{formatDate(date)}</time>
+        {categories && (
+          <>
+            <span>·</span>
+            <span class="text-primary">{categories}</span>
+          </>
+        )}
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-3">
+        {title}
+      </h1>
+      {subtitle && (
+        <p class="text-lg text-gray-500">{subtitle}</p>
+      )}
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {tags.map((tag: string) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose max-w-none">
+      <slot />
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-gray-100">
+      <div class="flex items-center justify-between">
+        <a href="/blog" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          모든 글 보기
+        </a>
+        <div class="flex items-center gap-2 text-xs text-gray-400">
+          <img src="/slvis-logo.svg" alt="" class="w-4 h-4 opacity-40" />
+          SLVIS가 정리했어요
+        </div>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
