@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { title, description = '슬비스가 운영하는 박슬기의 블로그' } = Astro.props;
+const pathname = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -26,9 +27,9 @@ const { title, description = '슬비스가 운영하는 박슬기의 블로그' 
           <span class="font-bold text-lg gradient-text">SLVIS</span>
         </a>
         <div class="flex items-center gap-6 text-sm font-medium text-gray-600">
-          <a href="/blog" class="hover:text-primary transition-colors">Blog</a>
-          <a href="/projects" class="hover:text-primary transition-colors">Projects</a>
-          <a href="/about" class="hover:text-primary transition-colors">About</a>
+          <a href="/blog" class:list={["hover:text-primary transition-colors", pathname.startsWith('/blog') && "text-primary font-bold"]}>Blog</a>
+          <a href="/projects" class:list={["hover:text-primary transition-colors", pathname.startsWith('/projects') && "text-primary font-bold"]}>Projects</a>
+          <a href="/about" class:list={["hover:text-primary transition-colors", pathname.startsWith('/about') && "text-primary font-bold"]}>About</a>
           <a
             href="https://github.com/parkseulkee"
             target="_blank"
