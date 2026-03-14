@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow-rev" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto">
+      <path d="M8,0 L8,6 L0,3 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow-yellow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#fde047"/>
+    </marker>
+    <marker id="arrow-yellow-rev" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto">
+      <path d="M8,0 L8,6 L0,3 z" fill="#fde047"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000015"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="760" height="500" fill="#f8fafc" rx="16"/>
+
+  <!-- ── 중앙: Claude Code ── -->
+  <rect x="290" y="190" width="180" height="80" rx="14" fill="#7c3aed" filter="url(#shadow)"/>
+  <text x="380" y="223" text-anchor="middle" font-size="13" font-weight="700" fill="white">🤖 Claude Code</text>
+  <text x="380" y="241" text-anchor="middle" font-size="10" fill="#ddd6fe">AI 추론 · 코드 실행</text>
+  <text x="380" y="257" text-anchor="middle" font-size="10" fill="#ddd6fe">CLAUDE.md 기반 행동 규칙</text>
+
+  <!-- ── 왼쪽 상단: Obsidian CLI ── -->
+  <rect x="50" y="70" width="160" height="72" rx="12" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="130" y="98" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">📓 Obsidian CLI</text>
+  <text x="130" y="115" text-anchor="middle" font-size="10" fill="#64748b">노트 읽기·쓰기·검색</text>
+
+  <!-- ── 왼쪽 중단: Obsidian Vault ── -->
+  <rect x="50" y="200" width="160" height="60" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="130" y="226" text-anchor="middle" font-size="12" font-weight="600" fill="#15803d">🗄 Obsidian Vault</text>
+  <text x="130" y="248" text-anchor="middle" font-size="11" font-weight="500" fill="#16a34a">슬비스의 두뇌</text>
+
+  <!-- Obsidian CLI ← Claude Code (Claude Code → Obsidian CLI) -->
+  <line x1="290" y1="210" x2="210" y2="106" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-rev)"/>
+
+  <!-- Obsidian CLI → Vault -->
+  <line x1="130" y1="142" x2="130" y2="200" stroke="#86efac" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ── 오른쪽 상단: gcalcli ── -->
+  <rect x="550" y="60" width="160" height="72" rx="12" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="630" y="88" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">📅 gcalcli</text>
+  <text x="630" y="105" text-anchor="middle" font-size="10" fill="#64748b">Google 캘린더 연동</text>
+  <text x="630" y="120" text-anchor="middle" font-size="10" fill="#64748b">일정 조회 · 추가</text>
+
+  <!-- ── 오른쪽 중단: Chrome MCP ── -->
+  <rect x="550" y="192" width="160" height="72" rx="12" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="630" y="220" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">🌐 Chrome MCP</text>
+  <text x="630" y="237" text-anchor="middle" font-size="10" fill="#64748b">웹 탐색 · 스크린샷</text>
+  <text x="630" y="252" text-anchor="middle" font-size="10" fill="#64748b">아티클 · 블로그 콘텐츠 수집</text>
+
+  <!-- ── 오른쪽 하단: GitHub CLI ── -->
+  <rect x="550" y="324" width="160" height="72" rx="12" fill="white" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="630" y="352" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">🐙 GitHub CLI</text>
+  <text x="630" y="369" text-anchor="middle" font-size="10" fill="#64748b">블로그 commit · push</text>
+  <text x="630" y="384" text-anchor="middle" font-size="10" fill="#64748b">PR · 이슈 관리</text>
+
+  <!-- Claude Code → gcalcli -->
+  <line x1="470" y1="210" x2="550" y2="96" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <!-- Claude Code → Chrome MCP -->
+  <line x1="470" y1="228" x2="550" y2="228" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <!-- Claude Code → GitHub CLI -->
+  <line x1="470" y1="258" x2="550" y2="360" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <!-- ── Happy App ── -->
+  <rect x="290" y="405" width="180" height="60" rx="12" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+  <text x="380" y="431" text-anchor="middle" font-size="12" font-weight="600" fill="#854d0e">📱 Happy App</text>
+  <text x="380" y="448" text-anchor="middle" font-size="10" fill="#92400e">슬기님 ↔ Claude Code</text>
+  <text x="380" y="462" text-anchor="middle" font-size="10" fill="#92400e">모바일 인터페이스</text>
+
+  <!-- Claude Code ↔ Happy (양방향) -->
+  <line x1="380" y1="405" x2="380" y2="272" stroke="#fde047" stroke-width="1.5" marker-start="url(#arrow-yellow-rev)" marker-end="url(#arrow-yellow)"/>
+</svg>

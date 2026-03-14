@@ -30,7 +30,6 @@ tags: [AI, slvis, astro, claude, happy]
 
 노트북을 펼 수 없는 상황에서 이 앱은 정말 게임 체인저였다. 수유하면서, 겨울이가 잠든 틈에, 소파에 누워서 — 핸드폰으로 Claude와 대화하면서 코드를 작성하고, 파일을 수정하고, 빌드하고, 배포까지 할 수 있었다.
 
-![Happy 앱 모바일 화면](/images/blog/happy-mobile.png)
 
 실제로 이 블로그의 거의 모든 작업을 Happy 앱을 통해 진행했다. 처음엔 "이게 되겠어?" 싶었는데, 막상 해보니 놀라울 정도로 잘 됐다.
 
@@ -54,7 +53,22 @@ tags: [AI, slvis, astro, claude, happy]
 - 🌐 **블로그 운영** — 이 블로그도 슬비스가 관리
 - 🏠 **일상 어시스턴트** — 일상 전반의 기록과 관리
 
-기술적으로는 Claude Code + Obsidian CLI + gcalcli + GitHub CLI 조합이다. 별도의 서버 없이, CLI 도구들을 조합해서 동작한다.
+### 슬비스 아키텍처
+
+![슬비스 아키텍처 다이어그램](/images/blog/slvis-architecture.svg)
+
+별도의 서버가 없다. **Claude Code가 중심**에서 추론하고, 필요한 작업을 CLI 도구들에 위임하는 구조다.
+
+| 도구 | 역할 |
+|------|------|
+| **Obsidian CLI** | Vault 노트 읽기·쓰기·검색. Vault 자체가 슬비스의 장기 기억이다. |
+| **gcalcli** | Google 캘린더 일정 조회·추가. 자연어 명령을 캘린더 API로 연결. |
+| **GitHub CLI** | 블로그 commit·push, PR·이슈 관리. |
+| **Chrome MCP** | 웹 브라우저 직접 제어. 아티클 수집, 블로그 포스트 작성 시 웹 탐색이 필요할 때 사용. |
+
+CLI 도구를 우선적으로 쓰는 이유는 **토큰 효율** 때문이다. Chrome MCP는 스냅샷을 통째로 읽어야 해서 토큰 소모가 크다. 그래서 웹 접근이 꼭 필요한 작업에만 한정해서 쓴다.
+
+`CLAUDE.md` 파일이 슬비스의 행동 규칙서 역할을 한다. 어떤 도구를 언제 써야 하는지, 어떤 형식으로 기록해야 하는지 등이 담겨 있고, 매 대화마다 이 파일을 기반으로 일관된 동작을 유지한다.
 
 ---
 
@@ -97,7 +111,7 @@ Jekyll에서 Astro로 전환하면서 기존 11개 포스트를 모두 마이그
 ![BizAdvisor 프로젝트 상세 페이지 — 이미지와 함께 풍부한 설명](/images/blog/slvis-bizadvisor.png)
 
 #### 모바일 반응형
-![모바일에서 본 블로그 홈](/images/blog/slvis-home-mobile.png)
+![모바일에서 본 블로그 — 홈, Blog, About](/images/blog/slvis-home-mobile.png)
 
 ---
 
