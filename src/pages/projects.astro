@@ -33,20 +33,11 @@ const opensourceProjects = [
 
 const internalProjects = [
   {
-    title: '쇼핑 관련 통계 데이터 파이프라인 운영',
-    description: 'Spark 기반 배치 파이프라인 운영 및 성능 최적화, Elasticsearch 활용 검색/통계 시스템 연동, Airflow 워크플로우 자동화.',
-    tech: ['Spark', 'Elasticsearch', 'Airflow'],
-    link: '/projects/data-pipeline',
-    emoji: '🛍',
-    type: '주요 업무',
-  },
-  {
     title: 'BizAdvisor (스마트스토어 통계 데이터 제공)',
     description: '사내 사용자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스.',
     tech: ['Spark', 'Elasticsearch', 'Airflow'],
     link: '/projects/bizadvisor',
     emoji: '📈',
-    type: '프로젝트',
   },
   {
     title: '데이터 기반 기여도 모델 (DDA)',
@@ -54,7 +45,6 @@ const internalProjects = [
     tech: ['Spark', 'Python', 'SQL'],
     link: '/projects/dda',
     emoji: '📊',
-    type: '프로젝트',
   },
   {
     title: 'AI 기반 인사이트 리포트 개발',
@@ -62,7 +52,6 @@ const internalProjects = [
     tech: ['LangChain', 'Langfuse', 'Streamlit'],
     link: '/projects/ai-insight-report',
     emoji: '📑',
-    type: '프로젝트',
   },
   {
     title: '데이터 품질 및 옵저버빌리티 구축',
@@ -70,15 +59,6 @@ const internalProjects = [
     tech: ['Great Expectations', 'Airflow', 'Datahub'],
     link: '/projects/data-quality',
     emoji: '✅',
-    type: '프로젝트',
-  },
-  {
-    title: 'AI & LLMOps 관련 활동',
-    description: 'LLMOps 툴 설계/구현, 추천 시스템 LLM 기반 재구성 PoC, 기술서 집필, 사내 기술 세션.',
-    tech: ['LangChain', 'LangGraph', 'Streamlit'],
-    link: '/projects/llmops-activity',
-    emoji: '🤖',
-    type: '활동',
   },
 ];
 ---
@@ -140,10 +120,7 @@ const internalProjects = [
             <div class="flex items-start gap-3">
               <span class="text-xl mt-0.5">{project.emoji}</span>
               <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors">{project.title}</h3>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">{project.type}</span>
-                </div>
+                <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{project.title}</h3>
                 <p class="text-gray-600 text-sm mb-2">{project.description}</p>
                 <div class="flex flex-wrap gap-1.5">
                   {project.tech.map((t) => (
