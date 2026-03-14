@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const projects = [
+const opensourceProjects = [
   {
     title: 'SLVIS (슬비스)',
     description: 'Obsidian vault를 두뇌로 활용하는 AI 개인 비서. 일정 관리, 뉴스 큐레이션, 지식 정리를 담당해요.',
@@ -9,6 +9,7 @@ const projects = [
     link: 'https://github.com/parkseulkee/slvis',
     emoji: '🤖',
     highlight: true,
+    external: true,
   },
   {
     title: 'LLMOps를 활용한 LLM 엔지니어링',
@@ -17,6 +18,7 @@ const projects = [
     link: 'https://github.com/parkseulkee/llmops',
     emoji: '📖',
     highlight: true,
+    external: true,
   },
   {
     title: 'parkseulkee.github.io',
@@ -25,6 +27,58 @@ const projects = [
     link: 'https://github.com/parkseulkee/parkseulkee.github.io',
     emoji: '📝',
     highlight: false,
+    external: true,
+  },
+];
+
+const internalProjects = [
+  {
+    title: '쇼핑 관련 통계 데이터 파이프라인 운영',
+    description: 'Spark 기반 배치 파이프라인 운영 및 성능 최적화, Elasticsearch 활용 검색/통계 시스템 연동, Airflow 워크플로우 자동화.',
+    tech: ['Spark', 'Elasticsearch', 'Airflow'],
+    link: '/projects/data-pipeline',
+    emoji: '🛍',
+    type: '주요 업무',
+  },
+  {
+    title: 'BizAdvisor (스마트스토어 통계 데이터 제공)',
+    description: '사내 사용자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스.',
+    tech: ['Spark', 'Elasticsearch', 'Airflow'],
+    link: '/projects/bizadvisor',
+    emoji: '📈',
+    type: '프로젝트',
+  },
+  {
+    title: '데이터 기반 기여도 모델 (DDA)',
+    description: 'GA4 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델 개발. 사내 최초 적용.',
+    tech: ['Spark', 'Python', 'SQL'],
+    link: '/projects/dda',
+    emoji: '📊',
+    type: '프로젝트',
+  },
+  {
+    title: 'AI 기반 인사이트 리포트 개발',
+    description: 'LangChain 기반 분석 및 리포트 자동 생성 파이프라인. Langfuse 도입 및 LLMOps 도구 개발 주도.',
+    tech: ['LangChain', 'Langfuse', 'Streamlit'],
+    link: '/projects/ai-insight-report',
+    emoji: '📑',
+    type: '프로젝트',
+  },
+  {
+    title: '데이터 품질 및 옵저버빌리티 구축',
+    description: 'Great Expectations 활용 품질 점검 자동화, 데이터 볼륨 이상 탐지, Datahub 도입.',
+    tech: ['Great Expectations', 'Airflow', 'Datahub'],
+    link: '/projects/data-quality',
+    emoji: '✅',
+    type: '프로젝트',
+  },
+  {
+    title: 'AI & LLMOps 관련 활동',
+    description: 'LLMOps 툴 설계/구현, 추천 시스템 LLM 기반 재구성 PoC, 기술서 집필, 사내 기술 세션.',
+    tech: ['LangChain', 'LangGraph', 'Streamlit'],
+    link: '/projects/llmops-activity',
+    emoji: '🤖',
+    type: '활동',
   },
 ];
 ---
@@ -36,42 +90,71 @@ const projects = [
       <p class="text-gray-500">주인이 만들고 있는 것들을 소개해 드릴게요 🚀</p>
     </header>
 
-    <div class="space-y-6">
-      {projects.map((project) => (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener"
-          class:list={[
-            'block rounded-2xl p-6 border shadow-sm card-hover group',
-            project.highlight
-              ? 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200'
-              : 'bg-white border-gray-100',
-          ]}
-        >
-          <div class="flex items-start gap-4">
-            <span class="text-3xl">{project.emoji}</span>
-            <div class="flex-1">
-              <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors text-lg mb-1">
-                {project.title}
-                <svg class="w-4 h-4 inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
-              </h3>
-              <p class="text-gray-600 text-sm mb-3">{project.description}</p>
-              <div class="flex flex-wrap gap-2">
-                {project.tech.map((t) => (
-                  <span class="tag">{t}</span>
-                ))}
+    <!-- 오픈소스 -->
+    <section class="mb-16">
+      <h2 class="text-lg font-bold text-gray-300 mb-6">Open Source</h2>
+      <div class="space-y-6">
+        {opensourceProjects.map((project) => (
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener"
+            class:list={[
+              'block rounded-2xl p-6 border shadow-sm card-hover group',
+              project.highlight
+                ? 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200'
+                : 'bg-white border-gray-100',
+            ]}
+          >
+            <div class="flex items-start gap-4">
+              <span class="text-3xl">{project.emoji}</span>
+              <div class="flex-1">
+                <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors text-lg mb-1">
+                  {project.title}
+                  <svg class="w-4 h-4 inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </h3>
+                <p class="text-gray-600 text-sm mb-3">{project.description}</p>
+                <div class="flex flex-wrap gap-2">
+                  {project.tech.map((t) => (
+                    <span class="tag">{t}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      ))}
-    </div>
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <div class="mt-16 text-center text-sm text-gray-400">
-      <p>더 많은 프로젝트가 곧 추가될 예정이에요! 🌱</p>
-    </div>
+    <!-- 사내 프로젝트 -->
+    <section>
+      <h2 class="text-lg font-bold text-gray-300 mb-6">Company Projects (Naver)</h2>
+      <div class="space-y-4">
+        {internalProjects.map((project) => (
+          <a
+            href={project.link}
+            class="block bg-white rounded-xl p-5 border border-gray-100 shadow-sm card-hover group"
+          >
+            <div class="flex items-start gap-3">
+              <span class="text-xl mt-0.5">{project.emoji}</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors">{project.title}</h3>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">{project.type}</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-2">{project.description}</p>
+                <div class="flex flex-wrap gap-1.5">
+                  {project.tech.map((t) => (
+                    <span class="tag text-[10px]">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
   </div>
 </BaseLayout>

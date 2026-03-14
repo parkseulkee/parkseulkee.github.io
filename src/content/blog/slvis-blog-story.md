@@ -42,7 +42,7 @@ tags: [AI, slvis, astro, claude, happy]
 
 네이버에서 데이터 엔지니어로 일하면서 AI/LLM 관련 업무를 많이 해왔다. LLMOps 도구도 만들고, 관련 서적도 출판했다. 그러다 보니 자연스럽게 "나만의 AI 비서를 만들어보자"는 생각이 들었다.
 
-아이언맨의 자비스처럼, 내 일상을 체계적으로 관리해주는 비서. 그게 **슬비스(SLVIS — Smart Logical Virtual Intelligence System)**다.
+아이언맨의 자비스처럼, 내 일상을 체계적으로 관리해주는 비서. 그게 **슬비스**다. SLVIS — **S**mart **L**ogical **V**irtual **I**ntelligence **S**ystem.
 
 ### 어떻게 동작하나
 
