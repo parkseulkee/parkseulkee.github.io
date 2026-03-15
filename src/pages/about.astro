@@ -1,11 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const books = [
+  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '위키북스', link: 'https://www.yes24.com/product/goods/145341599', image: '/images/book-llmops.jpg' },
+];
+
 const talks = [
   { date: '2023.11', title: '데이터 품질 이슈로 발생하는 data downtime을 줄이자', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/5766317' },
   { date: '2024.08', title: 'LLMOps를 위한 프롬프트 엔지니어링 도구 개발 경험기', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/3344073' },
   { date: '2025.04', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈)', subtitle: 'ㄴ 생산성 2배 프로젝트: MCP로 일도 정보도 더 스마트하게', venue: 'Tech Meetup · 사내 공유 · 연사' },
-  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '저술 · 위키북스', link: 'https://www.yes24.com/product/goods/145341599', image: '/images/book-llmops.jpg' },
   { date: '2025.06', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈 2)', subtitle: 'ㄴ 이제 MCP는 준비됐고, Agent는 만들기만 하면 돼!', venue: 'Tech Meetup · 사내 공유 · 연사' },
   { date: '2025.07', title: 'AI 생산성 향상 외부 세미나', subtitle: 'ㄴ AI 활용 사례 공유 (MCP 와 Agent 구축)', venue: '대웅제약 IT 자회사(IDSTrust) · 외부 세미나 · 연사' },
 ];
@@ -159,9 +162,37 @@ const skills = [
       </div>
     </section>
 
-    <!-- Talks & Writing -->
+    <!-- Writing (Books) -->
     <section class="mb-12">
-      <h2 class="hud-section-title mb-6">Talks & Writing</h2>
+      <h2 class="hud-section-title mb-6">Writing</h2>
+
+      <div class="hud-frame overflow-hidden">
+        {books.map((book, i) => (
+          <div class:list={['flex items-start gap-4 p-4', i > 0 && 'border-t border-dark-border/50']}>
+            <span class="text-xs text-hud-dim font-mono whitespace-nowrap mt-0.5 w-16 shrink-0">{book.date}</span>
+            <div class="flex-1 min-w-0 flex items-start gap-4">
+              {book.image && (
+                <a href={book.link} target="_blank" rel="noopener" class="shrink-0">
+                  <img src={book.image} alt={book.title} class="w-14 rounded border border-dark-border hover:border-primary/50 transition-colors" />
+                </a>
+              )}
+              <div class="flex-1 min-w-0">
+                {book.link ? (
+                  <a href={book.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent glow-text-sm transition-colors">{book.title} ↗</a>
+                ) : (
+                  <p class="text-sm font-medium text-white">{book.title}</p>
+                )}
+                <p class="text-xs text-hud-dim mt-0.5 font-mono">{book.venue}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Talks -->
+    <section class="mb-12">
+      <h2 class="hud-section-title mb-6">Talks</h2>
 
       <div class="hud-frame overflow-hidden">
         {talks.map((talk, i) => (
