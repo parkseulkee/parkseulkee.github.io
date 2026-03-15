@@ -214,6 +214,28 @@
   border-radius: 2px;
 }
 
+/* Tag filter button */
+.tag-filter-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.tag-filter-btn:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.4);
+}
+/* TOC active link */
+.toc-active {
+  color: #00D4FF !important;
+  text-shadow: 0 0 4px rgba(0, 212, 255, 0.4);
+}
+
+.tag-filter-btn.active {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: #00D4FF;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+  text-shadow: 0 0 4px rgba(0, 212, 255, 0.4);
+}
+
 /* ==========================================
    HUD Section Header
    ========================================== */

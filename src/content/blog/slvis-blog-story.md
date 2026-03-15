@@ -107,9 +107,6 @@ Jekyll에서 Astro로 전환하면서 기존 11개 포스트를 모두 마이그
 #### Projects — 오픈소스 + 사내 프로젝트
 ![Projects 페이지 — 슬비스, LLMOps 서적, 블로그](/images/blog/slvis-projects.png)
 
-#### 프로젝트 상세 — 사내 프로젝트도 포스팅처럼
-![BizAdvisor 프로젝트 상세 페이지 — 이미지와 함께 풍부한 설명](/images/blog/slvis-bizadvisor.png)
-
 #### 모바일 반응형
 ![모바일에서 본 블로그 — 홈, Blog, About](/images/blog/slvis-home-mobile.png)
 

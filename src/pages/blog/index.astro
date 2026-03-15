@@ -10,6 +10,9 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+// Collect all unique tags
+const allTags = [...new Set(posts.flatMap(p => p.data.tags ?? []))].sort();
+
 // Group posts by year
 const postsByYear = posts.reduce((acc, post) => {
   const year = new Date(post.data.date).getFullYear().toString();
@@ -28,14 +31,33 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
       <p class="text-hud-dim font-mono text-sm">슬비스가 정리한 슬기님의 기술 이야기들</p>
     </header>
 
+    <!-- Tag Filter -->
+    <nav class="mb-10 flex flex-wrap gap-2" id="tag-filter">
+      <button
+        class="tag tag-filter-btn active"
+        data-tag="all"
+      >
+        ALL
+      </button>
+      {allTags.map((tag) => (
+        <button
+          class="tag tag-filter-btn"
+          data-tag={tag}
+        >
+          {tag}
+        </button>
+      ))}
+    </nav>
+
     {years.map((year) => (
-      <section class="mb-12">
+      <section class="mb-12 year-section" data-year={year}>
         <h2 class="hud-section-title mb-4">{year}</h2>
         <div class="space-y-1">
           {postsByYear[year].map((post) => (
             <a
               href={`/blog/${post.id}`}
-              class="flex items-baseline gap-4 group py-3 border-b border-dark-border/50 hover:border-primary/30 transition-colors"
+              class="flex items-baseline gap-4 group py-3 border-b border-dark-border/50 hover:border-primary/30 transition-colors post-item"
+              data-tags={JSON.stringify(post.data.tags ?? [])}
             >
               <time class="text-sm text-hud-dim whitespace-nowrap font-mono w-24 shrink-0">
                 {formatDate(post.data.date).replace(`${year}년 `, '')}
@@ -50,3 +72,30 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
     ))}
   </div>
 </BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
+  const posts = document.querySelectorAll<HTMLElement>('.post-item');
+  const sections = document.querySelectorAll<HTMLElement>('.year-section');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag!;
+
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      posts.forEach(post => {
+        const tags: string[] = JSON.parse(post.dataset.tags || '[]');
+        const show = tag === 'all' || tags.includes(tag);
+        post.style.display = show ? '' : 'none';
+      });
+
+      // Hide year sections with no visible posts
+      sections.forEach(section => {
+        const visible = section.querySelectorAll<HTMLElement>('.post-item:not([style*="display: none"])');
+        section.style.display = visible.length > 0 ? '' : 'none';
+      });
+    });
+  });
+</script>
