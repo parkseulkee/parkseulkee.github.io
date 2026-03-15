@@ -8,6 +8,7 @@ interface Props {
 
 const { title, description = '슬비스가 운영하는 박슬기의 블로그' } = Astro.props;
 const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
 ---
 
 <!doctype html>
@@ -19,43 +20,187 @@ const pathname = Astro.url.pathname;
     <link rel="icon" type="image/svg+xml" href="/slvis-logo.svg" />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen flex flex-col">
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+  <body class="min-h-screen flex flex-col hud-scanline">
+    <!-- Animated Background -->
+    <div id="bg-container" style="position:fixed;inset:0;z-index:0;overflow:hidden;background:#00050A;">
+      <canvas id="bg-stars" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+      <canvas id="bg-nebula" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-dark-border" style="background: rgba(0, 5, 10, 0.85); backdrop-filter: blur(12px);">
       <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-2 group">
-          <img src="/slvis-logo.svg" alt="SLVIS" class="w-8 h-8 group-hover:scale-110 transition-transform" />
-          <span class="font-bold text-lg gradient-text">SLVIS</span>
+        <a href="/" class="flex items-center gap-3 group">
+          <img src="/slvis-logo.svg" alt="SLVIS" class="w-8 h-8 group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.6)] transition-all" />
+          <span class="font-hud font-bold text-lg glow-text tracking-wider text-primary">SLVIS</span>
         </a>
-        <div class="flex items-center gap-6 text-sm font-medium text-gray-600">
-          <a href="/blog" class:list={["hover:text-primary transition-colors", pathname.startsWith('/blog') && "text-primary font-bold"]}>Blog</a>
-          <a href="/projects" class:list={["hover:text-primary transition-colors", pathname.startsWith('/projects') && "text-primary font-bold"]}>Projects</a>
-          <a href="/about" class:list={["hover:text-primary transition-colors", pathname.startsWith('/about') && "text-primary font-bold"]}>About</a>
-          <a
-            href="https://github.com/parkseulkee"
-            target="_blank"
-            rel="noopener"
-            class="hover:text-primary transition-colors"
-            aria-label="GitHub"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
+        {!isHome && (
+          <div class="flex items-center gap-8">
+            <a href="/blog" class:list={["hud-nav-link", pathname.startsWith('/blog') && "active"]}>
+              Blog
+              <span class="hud-nav-corner">&#x2519;</span>
+            </a>
+            <a href="/projects" class:list={["hud-nav-link", pathname.startsWith('/projects') && "active"]}>
+              Projects
+              <span class="hud-nav-corner">&#x2519;</span>
+            </a>
+            <a href="/about" class:list={["hud-nav-link", pathname.startsWith('/about') && "active"]}>
+              About
+              <span class="hud-nav-corner">&#x2519;</span>
+            </a>
+          </div>
+        )}
       </div>
     </nav>
 
-    <main class="flex-1">
+    <main class="flex-1 relative z-10">
       <slot />
     </main>
 
-    <footer class="border-t border-gray-100 mt-20">
-      <div class="max-w-4xl mx-auto px-6 py-8 text-center text-sm text-gray-400">
-        <p class="flex items-center justify-center gap-2">
+    <!-- Footer -->
+    <footer class="border-t border-dark-border mt-20 relative z-10">
+      <div class="max-w-4xl mx-auto px-6 py-8 text-center text-sm text-hud-dim">
+        <p class="flex items-center justify-center gap-2 font-mono">
           <img src="/slvis-logo.svg" alt="" class="w-4 h-4 opacity-50" />
-          Operated by <span class="gradient-text font-medium">SLVIS</span> · © {new Date().getFullYear()} Seulkee Park
+          Operated by <span class="text-primary glow-text-sm font-hud text-xs tracking-wider">SLVIS</span> · © {new Date().getFullYear()} Seulkee Park
         </p>
       </div>
     </footer>
+
+    <!-- Background Animation Script -->
+    <script>
+      function initBackground() {
+        const dpr = window.devicePixelRatio || 1;
+
+        // === STARS (dots) ===
+        const starsCanvas = document.getElementById('bg-stars') as HTMLCanvasElement;
+        const starsCtx = starsCanvas.getContext('2d')!;
+
+        // === NEBULA (puffs) ===
+        const nebulaCanvas = document.getElementById('bg-nebula') as HTMLCanvasElement;
+        const nebulaCtx = nebulaCanvas.getContext('2d')!;
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        function resize() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          starsCanvas.width = width * dpr;
+          starsCanvas.height = height * dpr;
+          starsCtx.scale(dpr, dpr);
+          nebulaCanvas.width = width * dpr;
+          nebulaCanvas.height = height * dpr;
+          nebulaCtx.scale(dpr, dpr);
+          generateStars();
+          generatePuffs();
+        }
+
+        // Stars
+        interface Star {
+          x: number; y: number; size: number; alpha: number;
+          twinkleSpeed: number; twinkleOffset: number;
+        }
+        let stars: Star[] = [];
+
+        function generateStars() {
+          const count = Math.floor((width * height) / 4000);
+          stars = [];
+          for (let i = 0; i < count; i++) {
+            stars.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              size: Math.random() * 1.2 + 0.2,
+              alpha: Math.random() * 0.4 + 0.1,
+              twinkleSpeed: Math.random() * 0.003 + 0.001,
+              twinkleOffset: Math.random() * Math.PI * 2,
+            });
+          }
+        }
+
+        function drawStars(time: number) {
+          starsCtx.clearRect(0, 0, width, height);
+          for (const star of stars) {
+            const flicker = Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
+            const alpha = star.alpha + flicker * 0.1;
+            starsCtx.beginPath();
+            starsCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            starsCtx.fillStyle = `rgba(180, 220, 255, ${Math.max(0.05, Math.min(1, alpha))})`;
+            starsCtx.fill();
+          }
+        }
+
+        // Nebula puffs
+        interface Puff {
+          x: number; y: number; radius: number;
+          vx: number; vy: number;
+          hue: number; alpha: number;
+        }
+        let puffs: Puff[] = [];
+
+        function generatePuffs() {
+          puffs = [];
+          const count = 8;
+          for (let i = 0; i < count; i++) {
+            puffs.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              radius: Math.random() * 400 + 250,
+              vx: (Math.random() - 0.5) * 0.1,
+              vy: (Math.random() - 0.5) * 0.06,
+              hue: 175 + Math.random() * 30, // cyan-teal range
+              alpha: Math.random() * 0.12 + 0.14,
+            });
+          }
+        }
+
+        function drawNebula() {
+          nebulaCtx.clearRect(0, 0, width, height);
+          for (const puff of puffs) {
+            // Move
+            puff.x += puff.vx;
+            puff.y += puff.vy;
+            // Wrap
+            if (puff.x < -puff.radius) puff.x = width + puff.radius;
+            if (puff.x > width + puff.radius) puff.x = -puff.radius;
+            if (puff.y < -puff.radius) puff.y = height + puff.radius;
+            if (puff.y > height + puff.radius) puff.y = -puff.radius;
+
+            const gradient = nebulaCtx.createRadialGradient(
+              puff.x, puff.y, 0,
+              puff.x, puff.y, puff.radius
+            );
+            gradient.addColorStop(0, `hsla(${puff.hue}, 80%, 30%, ${puff.alpha})`);
+            gradient.addColorStop(0.3, `hsla(${puff.hue}, 60%, 20%, ${puff.alpha * 0.7})`);
+            gradient.addColorStop(0.6, `hsla(${puff.hue}, 40%, 12%, ${puff.alpha * 0.3})`);
+            gradient.addColorStop(1, `hsla(${puff.hue}, 30%, 5%, 0)`);
+
+            nebulaCtx.beginPath();
+            nebulaCtx.arc(puff.x, puff.y, puff.radius, 0, Math.PI * 2);
+            nebulaCtx.fillStyle = gradient;
+            nebulaCtx.fill();
+          }
+        }
+
+        // Animation loop
+        function animate(time: number) {
+          drawStars(time);
+          drawNebula();
+          requestAnimationFrame(animate);
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(animate);
+      }
+
+      // Run on page load and navigation
+      document.addEventListener('astro:page-load', initBackground);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBackground);
+      } else {
+        initBackground();
+      }
+    </script>
   </body>
 </html>

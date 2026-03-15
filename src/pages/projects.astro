@@ -7,7 +7,6 @@ const opensourceProjects = [
     description: 'Obsidian vault를 두뇌로 활용하는 AI 개인 비서. 일정 관리, 뉴스 큐레이션, 지식 정리를 담당해요.',
     tech: ['Claude', 'Obsidian', 'TypeScript'],
     link: 'https://github.com/parkseulkee/slvis',
-    emoji: '🤖',
     highlight: true,
     external: true,
   },
@@ -16,7 +15,6 @@ const opensourceProjects = [
     description: 'LLM 애플리케이션의 개발, 운영, 평가, 개선 전 과정을 다루는 실무 가이드. LangChain, Streamlit, Pinecone 등의 도구를 활용한 LLMOps 실전서.',
     tech: ['LangChain', 'Streamlit', 'Pinecone', 'Python'],
     link: 'https://github.com/parkseulkee/llmops',
-    emoji: '📖',
     highlight: true,
     external: true,
   },
@@ -25,7 +23,6 @@ const opensourceProjects = [
     description: '지금 보고 계신 이 블로그! 슬비스가 운영하는 개인 블로그 & 포트폴리오.',
     tech: ['Astro', 'Tailwind CSS', 'TypeScript'],
     link: 'https://github.com/parkseulkee/parkseulkee.github.io',
-    emoji: '📝',
     highlight: false,
     external: true,
   },
@@ -37,28 +34,24 @@ const internalProjects = [
     description: '사내 사용자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스.',
     tech: ['Spark', 'Elasticsearch', 'Airflow'],
     link: '/projects/bizadvisor',
-    emoji: '📈',
   },
   {
     title: '데이터 기반 기여도 모델 (DDA)',
     description: 'GA4 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델 개발. 사내 최초 적용.',
     tech: ['Spark', 'Python', 'SQL'],
     link: '/projects/dda',
-    emoji: '📊',
   },
   {
     title: 'AI 기반 인사이트 리포트 개발',
     description: 'LangChain 기반 분석 및 리포트 자동 생성 파이프라인. Langfuse 도입 및 LLMOps 도구 개발 주도.',
     tech: ['LangChain', 'Langfuse', 'Streamlit'],
     link: '/projects/ai-insight-report',
-    emoji: '📑',
   },
   {
     title: '데이터 품질 및 옵저버빌리티 구축',
     description: 'Great Expectations 활용 품질 점검 자동화, 데이터 볼륨 이상 탐지, Datahub 도입.',
     tech: ['Great Expectations', 'Airflow', 'Datahub'],
     link: '/projects/data-quality',
-    emoji: '✅',
   },
 ];
 ---
@@ -66,39 +59,33 @@ const internalProjects = [
 <BaseLayout title="Projects — SLVIS">
   <div class="max-w-3xl mx-auto px-6 py-12">
     <header class="mb-12">
-      <h1 class="text-3xl font-bold text-gray-900 mb-3">Projects</h1>
-      <p class="text-gray-500">슬기님이 만들고 있는 것들을 소개해 드릴게요 🚀</p>
+      <h1 class="text-3xl font-bold text-white mb-3 font-hud tracking-wide">Projects</h1>
+      <p class="text-hud-dim font-mono text-sm">슬기님이 만들고 있는 것들을 소개해 드릴게요</p>
     </header>
 
-    <!-- 오픈소스 -->
+    <!-- Open Source -->
     <section class="mb-16">
-      <h2 class="text-lg font-bold text-gray-300 mb-6">Open Source</h2>
-      <div class="space-y-6">
+      <h2 class="hud-section-title mb-6">Open Source</h2>
+      <div class="space-y-3">
         {opensourceProjects.map((project) => (
           <a
             href={project.link}
             target="_blank"
             rel="noopener"
-            class:list={[
-              'block rounded-2xl p-6 border shadow-sm card-hover group',
-              project.highlight
-                ? 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200'
-                : 'bg-white border-gray-100',
-            ]}
+            class="block hud-frame-sm p-5 card-hover group"
           >
-            <div class="flex items-start gap-4">
-              <span class="text-3xl">{project.emoji}</span>
+            <div class="flex items-start gap-3">
               <div class="flex-1">
-                <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors text-lg mb-1">
+                <h3 class="font-bold text-white group-hover:text-primary transition-colors mb-1">
                   {project.title}
-                  <svg class="w-4 h-4 inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
                 </h3>
-                <p class="text-gray-600 text-sm mb-3">{project.description}</p>
-                <div class="flex flex-wrap gap-2">
+                <p class="text-hud-text text-sm mb-2">{project.description}</p>
+                <div class="flex flex-wrap gap-1.5">
                   {project.tech.map((t) => (
-                    <span class="tag">{t}</span>
+                    <span class="tag text-[10px]">{t}</span>
                   ))}
                 </div>
               </div>
@@ -108,20 +95,19 @@ const internalProjects = [
       </div>
     </section>
 
-    <!-- 사내 프로젝트 -->
+    <!-- Company Projects -->
     <section>
-      <h2 class="text-lg font-bold text-gray-300 mb-6">Company Projects (Naver)</h2>
-      <div class="space-y-4">
+      <h2 class="hud-section-title mb-6">Company Projects · Naver</h2>
+      <div class="space-y-3">
         {internalProjects.map((project) => (
           <a
             href={project.link}
-            class="block bg-white rounded-xl p-5 border border-gray-100 shadow-sm card-hover group"
+            class="block hud-frame-sm p-5 card-hover group"
           >
             <div class="flex items-start gap-3">
-              <span class="text-xl mt-0.5">{project.emoji}</span>
               <div class="flex-1">
-                <h3 class="font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">{project.title}</h3>
-                <p class="text-gray-600 text-sm mb-2">{project.description}</p>
+                <h3 class="font-bold text-white group-hover:text-primary transition-colors mb-1">{project.title}</h3>
+                <p class="text-hud-text text-sm mb-2">{project.description}</p>
                 <div class="flex flex-wrap gap-1.5">
                   {project.tech.map((t) => (
                     <span class="tag text-[10px]">{t}</span>

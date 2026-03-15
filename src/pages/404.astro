@@ -4,17 +4,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="404 — SLVIS">
   <div class="max-w-3xl mx-auto px-6 py-20 text-center">
-    <img src="/slvis-logo.svg" alt="SLVIS" class="w-24 h-24 mx-auto mb-8 opacity-50" />
-    <h1 class="text-6xl font-bold text-gray-200 mb-4">404</h1>
-    <div class="speech-bubble inline-block max-w-md mx-auto">
-      <p class="text-sm text-primary font-medium mb-2">💬 SLVIS</p>
-      <p class="text-gray-600">
-        앗, 이 페이지는 찾을 수 없어요! 😅<br />
+    <div class="relative inline-block mb-8">
+      <div class="absolute inset-0 w-24 h-24 rounded-full bg-alert/10 filter blur-lg animate-glow-pulse"></div>
+      <img src="/slvis-logo.svg" alt="SLVIS" class="relative w-24 h-24 mx-auto opacity-50" />
+    </div>
+    <h1 class="text-6xl font-hud font-bold text-alert/30 mb-4 glow-text" style="text-shadow: 0 0 20px rgba(255,75,43,0.3);">404</h1>
+    <div class="speech-bubble inline-block max-w-md mx-auto font-pixel">
+      <p class="text-xs font-hud text-alert tracking-widest mb-2">// ERROR</p>
+      <p class="text-hud-text">
+        앗, 이 페이지는 찾을 수 없어요!<br />
         제가 아직 정리하지 못한 곳인 것 같아요.
       </p>
     </div>
     <div class="mt-8">
-      <a href="/" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-blue-600 transition-colors">
+      <a href="/" class="hud-btn">
         홈으로 돌아가기
       </a>
     </div>
