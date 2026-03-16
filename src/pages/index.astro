@@ -6,10 +6,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <!-- Hero Section -->
   <section class="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center">
     <div class="max-w-4xl mx-auto px-6 py-20 w-full">
-      <!-- SLVIS Logo -->
+
+      <!-- SLVIS Logo — hologram boot -->
       <div class="flex flex-col items-center mb-12">
-        <div class="relative animate-fade-in">
+        <div id="logo-container" class="relative opacity-0">
+          <!-- Hologram scan overlay -->
+          <div id="holo-scan" class="absolute inset-0 w-32 h-32 md:w-40 md:h-40 pointer-events-none overflow-hidden rounded-full" style="z-index:2;">
+            <div class="holo-scanline-bar"></div>
+          </div>
+          <!-- Glow backdrop -->
           <div class="absolute inset-0 w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/10 filter blur-xl animate-glow-pulse"></div>
+          <!-- Hologram rings -->
+          <div id="holo-ring-1" class="absolute inset-[-16px] border border-primary/0 rounded-full transition-all duration-1000"></div>
+          <div id="holo-ring-2" class="absolute inset-[-30px] border border-primary/0 rounded-full transition-all duration-1000 delay-200"></div>
           <img
             src="/slvis-logo.svg"
             alt="SLVIS"
@@ -18,22 +27,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <!-- SLVIS Speech -->
-      <div class="max-w-2xl mx-auto animate-fade-in-up">
+      <!-- Boot status line -->
+      <div id="boot-status" class="text-center mb-6 opacity-0">
+        <span class="font-mono text-xs text-primary/60 tracking-wider">
+          <span id="boot-text"></span><span id="boot-cursor" class="text-primary">_</span>
+        </span>
+      </div>
+
+      <!-- SLVIS Speech bubble -->
+      <div id="speech-section" class="max-w-2xl mx-auto opacity-0">
         <div class="speech-bubble text-center font-pixel">
           <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">
             Welcome to <span class="gradient-text glow-text">SLVIS</span>.
           </h1>
           <p class="text-hud-text text-sm leading-relaxed">
-            슬기님의 개인 비서이자, 이 블로그의 운영자입니다.
+            <span id="speech-text"></span><span id="speech-cursor" class="text-primary opacity-0">|</span>
           </p>
         </div>
       </div>
 
       <!-- Intro Cards -->
       <div class="mt-16 grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <div class="hud-frame p-6 card-hover animate-fade-in-up" style="animation-delay: 0.2s;">
-          <div class="text-xs font-hud text-primary/60 tracking-widest mb-3">OPERATOR</div>
+        <div id="card-operator" class="hud-frame p-6 card-hover opacity-0 translate-y-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="status-online"></span>
+            <span class="text-xs font-hud text-primary/60 tracking-widest">OPERATOR</span>
+          </div>
           <h3 class="font-bold text-white mb-2">슬기님 소개</h3>
           <p class="text-hud-text text-sm leading-relaxed">
             네이버 소속 <strong class="text-white">데이터 엔지니어</strong>입니다.
@@ -42,9 +61,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
         </div>
 
-        <div class="hud-frame p-6 card-hover animate-fade-in-up" style="animation-delay: 0.4s;">
-          <div class="text-xs font-hud text-primary/60 tracking-widest mb-3">SYSTEM</div>
-          <h3 class="font-bold text-white mb-2">저는 슬비스!</h3>
+        <div id="card-system" class="hud-frame p-6 card-hover opacity-0 translate-y-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="status-online"></span>
+            <span class="text-xs font-hud text-primary/60 tracking-widest">SYSTEM</span>
+          </div>
+          <h3 class="font-bold text-white mb-2">SLVIS 시스템 소개</h3>
           <p class="text-hud-text text-sm leading-relaxed">
             슬기님의 일정 관리, 뉴스 큐레이션, 지식 정리, 그리고 본 <strong class="text-white">블로그 운영</strong>을 담당하는 <strong class="text-white">AI 개인 비서</strong>입니다.
             Obsidian 기반 지식 베이스를 활용하여 기술 콘텐츠를 관리합니다.
@@ -52,8 +74,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <!-- Navigation Links (arwes style) -->
-      <div class="mt-16 flex items-center justify-center gap-8 animate-fade-in-up" style="animation-delay: 0.6s;">
+      <!-- Navigation Links -->
+      <div id="nav-links" class="mt-16 flex items-center justify-center gap-8 opacity-0">
         <a href="/blog" class="hud-nav-link group">
           Blog
           <span class="hud-nav-corner">&#x2519;</span>
@@ -70,3 +92,218 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* Hologram scanline bar that sweeps vertically */
+  .holo-scanline-bar {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to bottom,
+      transparent,
+      rgba(0, 212, 255, 0.6),
+      rgba(0, 255, 255, 0.9),
+      rgba(0, 212, 255, 0.6),
+      transparent
+    );
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.3);
+    animation: holoSweep 1.2s ease-in-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes holoSweep {
+    0%   { top: -4px; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Glitch flicker on logo reveal */
+  @keyframes holoReveal {
+    0%   { opacity: 0; transform: scale(0.8); filter: brightness(3) saturate(0) blur(4px); }
+    15%  { opacity: 0.7; filter: brightness(2) saturate(0.3) blur(2px); }
+    20%  { opacity: 0.3; transform: scale(1.02) skewX(-2deg); filter: brightness(4) saturate(0) blur(1px); }
+    25%  { opacity: 0.8; transform: scale(0.99) skewX(1deg); filter: brightness(1.5) saturate(0.5) blur(0px); }
+    35%  { opacity: 0.5; transform: scale(1.01); filter: brightness(2.5) saturate(0.2) blur(1px); }
+    50%  { opacity: 0.9; transform: scale(1); filter: brightness(1.2) saturate(0.8) blur(0px); }
+    70%  { opacity: 1; filter: brightness(1) saturate(1) blur(0px); }
+    100% { opacity: 1; transform: scale(1); filter: brightness(1) saturate(1) blur(0px); }
+  }
+
+  .holo-ring-active-1 {
+    border-color: rgba(0, 212, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+    animation: ringPulse 3s ease-in-out infinite;
+  }
+  .holo-ring-active-2 {
+    border-color: rgba(0, 212, 255, 0.1) !important;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.05);
+    animation: ringPulse 3s ease-in-out infinite 0.5s;
+  }
+
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50%      { transform: scale(1.03); opacity: 1; }
+  }
+
+  /* Speech bubble entrance */
+  @keyframes speechReveal {
+    0%   { opacity: 0; transform: translateY(15px) scale(0.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Card entrance with HUD border draw */
+  @keyframes cardReveal {
+    0%   { opacity: 0; transform: translateY(16px); clip-path: inset(0 100% 100% 0); }
+    40%  { clip-path: inset(0 0 100% 0); }
+    100% { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); }
+  }
+
+  /* Nav links entrance */
+  @keyframes navReveal {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .reveal-speech {
+    animation: speechReveal 0.6s ease-out forwards;
+  }
+  .reveal-card {
+    animation: cardReveal 0.8s ease-out forwards;
+  }
+  .reveal-nav {
+    animation: navReveal 0.6s ease-out forwards;
+  }
+  .reveal-logo {
+    animation: holoReveal 1.4s ease-out forwards;
+  }
+
+  /* Boot cursor blink */
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+  }
+  #boot-cursor, #speech-cursor {
+    animation: cursorBlink 0.6s step-end infinite;
+  }
+</style>
+
+<script>
+  function initHeroSequence() {
+    const logo = document.getElementById('logo-container');
+    const holoScan = document.getElementById('holo-scan');
+    const ring1 = document.getElementById('holo-ring-1');
+    const ring2 = document.getElementById('holo-ring-2');
+    const bootStatus = document.getElementById('boot-status');
+    const bootText = document.getElementById('boot-text');
+    const bootCursor = document.getElementById('boot-cursor');
+    const speechSection = document.getElementById('speech-section');
+    const speechText = document.getElementById('speech-text');
+    const speechCursor = document.getElementById('speech-cursor');
+    const cardOperator = document.getElementById('card-operator');
+    const cardSystem = document.getElementById('card-system');
+    const navLinks = document.getElementById('nav-links');
+
+    if (!logo || !bootStatus || !speechSection) return;
+
+    // Check if already played this session
+    if (sessionStorage.getItem('slvis-intro-played')) {
+      // Skip animation, show everything immediately
+      logo.style.opacity = '1';
+      if (ring1) ring1.classList.add('holo-ring-active-1');
+      if (ring2) ring2.classList.add('holo-ring-active-2');
+      if (holoScan) holoScan.style.display = 'none';
+      bootStatus.style.display = 'none';
+      speechSection.style.opacity = '1';
+      if (speechText) speechText.textContent = '슬기님의 개인 비서이자, 이 블로그의 운영자입니다.';
+      if (speechCursor) speechCursor.style.display = 'none';
+      if (cardOperator) { cardOperator.style.opacity = '1'; cardOperator.style.transform = 'translateY(0)'; }
+      if (cardSystem) { cardSystem.style.opacity = '1'; cardSystem.style.transform = 'translateY(0)'; }
+      if (navLinks) navLinks.style.opacity = '1';
+      return;
+    }
+
+    // Helper: type text character by character
+    function typeText(element: HTMLElement, text: string, speed: number): Promise<void> {
+      return new Promise((resolve) => {
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            element.textContent += text[i];
+            i++;
+          } else {
+            clearInterval(interval);
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    // Helper: delay
+    function delay(ms: number): Promise<void> {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function runSequence() {
+      // Phase 1: Boot status text
+      bootStatus.style.opacity = '1';
+      await typeText(bootText!, 'SLVIS v2.0 initializing', 30);
+      await delay(300);
+      bootText!.textContent = '';
+      await typeText(bootText!, 'establishing neural link', 30);
+      await delay(300);
+      bootText!.textContent = '';
+      await typeText(bootText!, 'system online', 40);
+      await delay(200);
+
+      // Phase 2: Logo hologram reveal
+      logo.classList.add('reveal-logo');
+      await delay(400);
+
+      // Activate hologram rings
+      if (ring1) ring1.classList.add('holo-ring-active-1');
+      if (ring2) ring2.classList.add('holo-ring-active-2');
+
+      await delay(800);
+
+      // Fade out boot status
+      bootStatus.style.transition = 'opacity 0.4s ease';
+      bootStatus.style.opacity = '0';
+      if (bootCursor) bootCursor.style.display = 'none';
+
+      // Phase 3: Speech bubble
+      await delay(200);
+      speechSection.classList.add('reveal-speech');
+      if (speechCursor) speechCursor.style.opacity = '1';
+      await delay(400);
+      await typeText(speechText!, '슬기님의 개인 비서이자, 이 블로그의 운영자입니다.', 45);
+      await delay(200);
+      if (speechCursor) speechCursor.style.display = 'none';
+
+      // Phase 4: Cards reveal
+      await delay(300);
+      if (cardOperator) cardOperator.classList.add('reveal-card');
+      await delay(250);
+      if (cardSystem) cardSystem.classList.add('reveal-card');
+
+      // Phase 5: Nav links
+      await delay(400);
+      if (navLinks) navLinks.classList.add('reveal-nav');
+
+      // Mark as played for this session
+      sessionStorage.setItem('slvis-intro-played', '1');
+    }
+
+    // Start after a brief pause
+    setTimeout(runSequence, 500);
+  }
+
+  // Run on page load and Astro navigation
+  document.addEventListener('astro:page-load', initHeroSequence);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroSequence);
+  } else {
+    initHeroSequence();
+  }
+</script>
