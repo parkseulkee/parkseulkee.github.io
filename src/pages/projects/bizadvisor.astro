@@ -2,22 +2,22 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="BizAdvisor — SLVIS">
+<BaseLayout title="BizAdvisor & 쇼핑 통계 데이터 파이프라인 — SLVIS">
   <article class="max-w-3xl mx-auto px-6 py-12">
     <header class="mb-10">
       <div class="flex items-center gap-2 text-sm text-hud-dim mb-4">
-        <span class="px-2 py-0.5 border border-dark-border text-hud-dim font-mono text-xs">프로젝트</span>
+        <span class="px-2 py-0.5 border border-dark-border text-hud-dim font-mono text-xs">주요 업무 · 프로젝트</span>
         <span>·</span>
         <span>네이버</span>
         <span>·</span>
         <a href="https://bizadvisor.naver.com/" target="_blank" rel="noopener" class="text-primary hover:text-accent">bizadvisor.naver.com ↗</a>
       </div>
       <h1 class="text-3xl font-bold text-white leading-tight mb-3">
-        BizAdvisor (스마트스토어 통계 데이터 제공)
+        BizAdvisor & 쇼핑 통계 데이터 파이프라인
       </h1>
-      <p class="text-hud-dim text-lg">바쁜 사업자들을 위한 똑똑한 사이트 통계 서비스</p>
+      <p class="text-hud-dim text-lg">클릭·결제·광고·노출 데이터의 수집부터 시각화 서비스까지, End-to-End</p>
       <div class="flex flex-wrap gap-2 mt-4">
-        {['Spark', 'Elasticsearch', 'Airflow', 'SQL'].map(t => (
+        {['Spark', 'SQL', 'Elasticsearch', 'Airflow', 'S3'].map(t => (
           <span class="tag">{t}</span>
         ))}
       </div>
@@ -33,16 +33,47 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
 
     <div class="prose max-w-none">
-      <h2>프로젝트 소개</h2>
+      <h2>개요</h2>
       <p>
-        <strong>비즈어드바이저(BizAdvisor)</strong>는 온라인 사업자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스입니다.
-        고객이 어디에서 오는지, 어떤 행동을 하는지에 대한 정확한 이해를 통해 마케팅 효과를 향상시키고, 온라인 비즈니스를 효율적으로 관리할 수 있습니다.
+        네이버 쇼핑 서비스의 <strong>클릭, 결제, 광고, 노출</strong> 등 핵심 쇼핑 이벤트 데이터를 수집·집계하는 데이터 파이프라인을 설계하고 운영하며,
+        이를 기반으로 온라인 사업자에게 통계 리포트/대시보드를 제공하는 <strong>BizAdvisor</strong> 서비스까지 End-to-End로 담당하고 있습니다.
       </p>
 
-      <h2>핵심 기능</h2>
+      <h2>데이터 파이프라인</h2>
+      <ul>
+        <li><strong>Spark 기반 배치 파이프라인 운영 및 성능 최적화</strong>
+          <ul>
+            <li>대규모 쇼핑 이벤트 데이터의 일/시간 단위 집계 처리</li>
+            <li>파이프라인 병목 분석 및 쿼리/파티셔닝 최적화를 통한 처리 성능 개선</li>
+          </ul>
+        </li>
+        <li><strong>Elasticsearch를 활용한 검색/통계 시스템 연동</strong>
+          <ul>
+            <li>집계된 통계 데이터를 Elasticsearch에 인덱싱하여 실시간 검색·대시보드 서비스 지원</li>
+          </ul>
+        </li>
+        <li><strong>Airflow를 통한 워크플로우 자동화 및 모니터링 구축</strong>
+          <ul>
+            <li>데이터 파이프라인의 스케줄링, 의존성 관리, 실패 알림 자동화</li>
+            <li>데이터 품질 점검 태스크를 파이프라인에 통합하여 이상 데이터 조기 발견</li>
+          </ul>
+        </li>
+      </ul>
 
-      <h3>종합적인 사업 정보 제공</h3>
-      <p>온라인 사업을 이해하는 데 필요한 모든 정보를 종합적으로 제공합니다.</p>
+      <h2>핵심 데이터</h2>
+      <ul>
+        <li>클릭 이벤트 데이터 (상품 조회, 검색, 카테고리 탐색 등)</li>
+        <li>결제 이벤트 데이터 (주문, 결제 완료, 취소/환불 등)</li>
+        <li>광고 데이터 (광고 노출, 클릭, 전환 등)</li>
+        <li>노출 이벤트 데이터 (상품 노출, 영역별 노출 등)</li>
+        <li>커머스 통계 지표 (전환율, 객단가, GMV 등)</li>
+      </ul>
+
+      <h2>BizAdvisor 서비스</h2>
+      <p>
+        <strong>비즈어드바이저(BizAdvisor)</strong>는 위 파이프라인에서 집계된 데이터를 시각화하여 온라인 사업자에게 제공하는 리포트/대시보드 서비스입니다.
+        고객이 어디에서 오는지, 어떤 행동을 하는지에 대한 정확한 이해를 통해 마케팅 효과를 향상시키고, 온라인 비즈니스를 효율적으로 관리할 수 있습니다.
+      </p>
 
       <h3>상세한 마케팅채널 정보</h3>
       <p>별다른 설정 없이도 우리나라의 현실에 맞는 상세한 마케팅채널 종류를 제공합니다. 특히 네이버쇼핑 관련 마케팅채널들을 상세히 제공합니다.</p>
@@ -90,7 +121,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <h2>주요 기여</h2>
       <ul>
-        <li>클릭, 결제 등 주요 지표 기반으로 사용자 의사결정 지원</li>
+        <li><strong>디멘전·메트릭 등 지표 체계 설계</strong> — 서비스에 필요한 통계 지표를 정의하고, 데이터 정합성을 꼼꼼하게 검증</li>
         <li>다양한 통계 집계 로직과 시나리오에 따른 데이터 가공 처리</li>
         <li>성능 개선 및 운영 자동화로 안정적 서비스 제공</li>
       </ul>

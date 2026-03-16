@@ -1,37 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const books = [
-  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '위키북스', link: 'https://www.yes24.com/product/goods/145341599', image: '/images/book-llmops.jpg' },
+const highlights = [
+  { label: '경력', value: '8년+', desc: '네이버 데이터 엔지니어' },
+  { label: '저서', value: '1권', desc: 'LLMOps 기술서 출간' },
+  { label: '발표', value: '5회+', desc: '사내외 기술 발표 & 세미나' },
+  { label: '전문', value: 'AI+Data', desc: 'LLMOps · 커머스 데이터' },
 ];
 
-const talks = [
-  { date: '2023.11', title: '데이터 품질 이슈로 발생하는 data downtime을 줄이자', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/5766317' },
-  { date: '2024.08', title: 'LLMOps를 위한 프롬프트 엔지니어링 도구 개발 경험기', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/3344073' },
-  { date: '2025.04', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈)', subtitle: 'ㄴ 생산성 2배 프로젝트: MCP로 일도 정보도 더 스마트하게', venue: 'Tech Meetup · 사내 공유 · 연사' },
-  { date: '2025.06', title: '개발 생산성을 높이는 AI 도구 활용 사례 (부제. 아이언맨 비긴즈 2)', subtitle: 'ㄴ 이제 MCP는 준비됐고, Agent는 만들기만 하면 돼!', venue: 'Tech Meetup · 사내 공유 · 연사' },
-  { date: '2025.07', title: 'AI 생산성 향상 외부 세미나', subtitle: 'ㄴ AI 활용 사례 공유 (MCP 와 Agent 구축)', venue: '대웅제약 IT 자회사(IDSTrust) · 외부 세미나 · 연사' },
+const strengths = [
+  { title: '꼼꼼한 데이터 설계', keyword: '꼼꼼함', desc: '디멘전·메트릭 등 지표 설계부터 클릭, 결제, 광고, 노출 데이터의 정합성 검증까지. 데이터를 꼼꼼하게 보는 습관이 8년간 커머스 파이프라인의 신뢰도를 만들어 왔습니다.' },
+  { title: '빠른 실행력 & 트렌드 감각', keyword: '스피드 · 트렌드', desc: 'LangChain 기반 인사이트 리포트, MCP 연동 생산성 도구 등 — 새로운 기술을 빠르게 학습하고, 학습에 그치지 않고 실제 도구로 만들어 업무에 적용합니다.' },
+  { title: '공유와 커뮤니케이션', keyword: '공유 · 커뮤니케이션', desc: '팀 내 도입에서 사내 Tech Meetup, 외부 세미나까지. 기술을 문서화하고 공유하여 조직의 역량을 함께 끌어올리는 것을 즐깁니다.' },
 ];
 
 const projects = [
-  {
-    title: '쇼핑 관련 통계 데이터 파이프라인 운영',
-    desc: '클릭, 결제 등 주요 쇼핑 데이터를 집계 및 전처리. Spark 기반 배치 파이프라인 운영 및 성능 최적화, Elasticsearch 활용 검색/통계 시스템 연동, Airflow 워크플로우 자동화 및 모니터링 구축.',
-    type: '주요 업무',
-    link: '/work/data-pipeline',
-  },
-  {
-    title: 'BizAdvisor (스마트스토어 통계 데이터 제공)',
-    desc: '사내 사용자에게 쇼핑 관련 통계 데이터를 시각화된 형태로 제공하는 리포트/대시보드 서비스.',
-    type: '프로젝트',
-    link: '/projects/bizadvisor',
-  },
-  {
-    title: '데이터 기반 기여도 모델 (DDA)',
-    desc: 'GA4 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델 개발. 사내 최초 적용.',
-    type: '프로젝트',
-    link: '/projects/dda',
-  },
   {
     title: 'AI 기반 인사이트 리포트 개발',
     desc: 'LangChain 기반의 분석 및 리포트 자동 생성 파이프라인 설계. Langfuse 도입 및 LLMOps 도구 개발을 주도.',
@@ -45,11 +28,32 @@ const projects = [
     link: '/projects/data-quality',
   },
   {
+    title: 'BizAdvisor & 쇼핑 통계 데이터 파이프라인',
+    desc: '클릭, 결제, 광고, 노출 등 핵심 쇼핑 데이터의 수집·집계 파이프라인부터, 사업자에게 시각화된 통계를 제공하는 BizAdvisor 서비스까지 End-to-End 담당.',
+    type: '주요 업무',
+    link: '/projects/bizadvisor',
+  },
+  {
+    title: '데이터 기반 기여도 모델 (DDA)',
+    desc: 'GA4 알고리즘 기반 모델을 재해석하여 내부 마케팅 기여도 측정 모델 개발. 사내 최초 적용.',
+    type: '프로젝트',
+    link: '/projects/dda',
+  },
+  {
     title: 'AI & LLMOps 관련 활동',
     desc: 'LangChain + Streamlit 기반 LLMOps 툴 설계 및 구현, ML 엔지니어 중심 추천 시스템을 LLM 기반으로 재구성 PoC.',
     type: '활동',
     link: '/work/llmops-activity',
   },
+];
+
+const activities = [
+  { date: '2025.07', title: 'AI 생산성 향상 외부 세미나', detail: 'AI 활용 사례 공유 (MCP 와 Agent 구축)', venue: '대웅제약 IT 자회사(IDSTrust) · 외부 세미나 · 연사', type: 'talk' },
+  { date: '2025.06', title: '개발 생산성을 높이는 AI 도구 활용 사례 (아이언맨 비긴즈 2)', detail: '이제 MCP는 준비됐고, Agent는 만들기만 하면 돼!', venue: 'Tech Meetup · 사내 공유 · 연사', type: 'talk' },
+  { date: '2025.04', title: 'LLMOps를 활용한 LLM 엔지니어링', venue: '위키북스', link: 'https://www.yes24.com/product/goods/145341599', image: '/images/book-llmops.jpg', type: 'book' },
+  { date: '2025.04', title: '개발 생산성을 높이는 AI 도구 활용 사례 (아이언맨 비긴즈)', detail: '생산성 2배 프로젝트: MCP로 일도 정보도 더 스마트하게', venue: 'Tech Meetup · 사내 공유 · 연사', type: 'talk' },
+  { date: '2024.08', title: 'LLMOps를 위한 프롬프트 엔지니어링 도구 개발 경험기', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/3344073', type: 'talk' },
+  { date: '2023.11', title: '데이터 품질 이슈로 발생하는 data downtime을 줄이자', venue: 'D2 & NE · 공유', link: 'https://d2.naver.com/helloworld/5766317', type: 'talk' },
 ];
 
 const skills = [
@@ -60,97 +64,67 @@ const skills = [
 
 <BaseLayout title="About — SLVIS">
   <div class="max-w-3xl mx-auto px-6 py-12">
-    <header class="mb-12 text-center">
-      <div class="inline-block mb-6">
+
+    <!-- Hero -->
+    <header class="mb-14 text-center">
+      <div class="inline-block mb-4">
         <div class="relative">
           <div class="absolute inset-0 w-20 h-20 rounded-full bg-primary/10 filter blur-lg animate-glow-pulse mx-auto"></div>
-          <img src="/slvis-logo.svg" alt="SLVIS" class="relative w-20 h-20 mx-auto mb-4" />
+          <img src="/slvis-logo.svg" alt="SLVIS" class="relative w-20 h-20 mx-auto" />
         </div>
       </div>
-      <h1 class="text-3xl font-bold text-white mb-3 font-hud tracking-wide">About</h1>
-      <p class="text-hud-dim font-mono text-sm">슬비스가 소개하는 슬기님</p>
+      <h1 class="text-3xl font-bold text-white mb-2">박슬기</h1>
+      <p class="text-primary font-hud text-sm tracking-wider mb-4">DATA ENGINEER · AI TOOLS BUILDER</p>
+      <p class="text-hud-text text-sm leading-relaxed max-w-lg mx-auto">
+        네이버에서 8년간 데이터 파이프라인을 설계하고 운영해 왔습니다.<br/>
+        최근에는 AI 기술을 실제 업무 도구로 만들어 적용하는 데 집중하고 있습니다.
+      </p>
     </header>
 
-    <!-- SLVIS Intro -->
-    <div class="speech-bubble mb-12 max-w-2xl mx-auto font-pixel">
-      <p class="text-hud-text leading-relaxed">
-        안녕하세요, <strong class="text-white">슬기님</strong>이 직접 만든 AI 개인 비서 <strong class="gradient-text glow-text">슬비스</strong>입니다.
-      </p>
-      <p class="text-hud-text leading-relaxed mt-2">
-        일정 관리부터 뉴스 큐레이션, 지식 정리, 그리고 이 블로그 운영까지 — 슬기님의 하루를 함께하고 있죠.
-        아이언맨에게 자비스가 있다면, 슬기님에게는 제가 있답니다.
-      </p>
-      <p class="text-hud-dim leading-relaxed mt-3 text-sm">
-        그럼, 제 자랑스러운 슬기님을 소개해 드릴게요.
-      </p>
-    </div>
-
-    <!-- Profile -->
-    <section class="mb-12">
-      <h2 class="hud-section-title mb-6">Profile</h2>
-
-      <div class="hud-frame p-6 mb-4">
-        <p class="text-hud-text leading-relaxed mb-4">
-          함께 일하기 편하고, 신뢰할 수 있는 동료가 되고자 합니다.
-          빠르고 정확하게 일하며, 다양한 기술 트렌드에 관심을 갖고 팀에 도움이 되는 내용을 적극적으로 문서화하고 공유해왔습니다.
-        </p>
-        <div class="flex items-start gap-3">
-          <div class="status-online mt-2 shrink-0"></div>
-          <div>
-            <p class="font-medium text-white">네이버 · 데이터 엔지니어</p>
-            <p class="text-sm text-hud-dim font-mono">2017.09 ~ 현재</p>
+    <!-- Highlights -->
+    <section class="mb-14">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {highlights.map((h) => (
+          <div class="hud-frame p-4 text-center">
+            <p class="text-2xl font-bold gradient-text glow-text font-hud">{h.value}</p>
+            <p class="text-xs text-primary/60 font-hud tracking-wider mt-1">{h.label}</p>
+            <p class="text-xs text-hud-dim mt-1">{h.desc}</p>
           </div>
-        </div>
+        ))}
       </div>
+    </section>
 
-      <!-- Tech Stack -->
-      <div class="hud-frame-sm p-6 mb-4">
-        <h3 class="font-bold text-white mb-3 text-sm font-hud tracking-wide">TECH STACK</h3>
-        <div class="flex flex-wrap gap-2 mb-4">
-          {skills.map((skill) => (
-            <span class="tag">{skill}</span>
-          ))}
-        </div>
-        <p class="text-sm text-hud-dim font-mono">
-          전문 도메인: 쇼핑/커머스 통계, 마케팅 기여도 분석, 데이터 품질 관리, LLMOps 도구 개발
-        </p>
-      </div>
-
-      <!-- Interests -->
-      <div class="hud-frame-sm p-6">
-        <h3 class="font-bold text-white mb-3 text-sm font-hud tracking-wide">INTERESTS</h3>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="flex items-center gap-2 text-sm text-hud-text">
-            <span class="text-primary">></span>
-            <span>AI 에이전트 & LLM</span>
+    <!-- Strengths -->
+    <section class="mb-14">
+      <h2 class="hud-section-title mb-6">Strengths</h2>
+      <div class="space-y-3">
+        {strengths.map((s) => (
+          <div class="hud-frame p-5">
+            <div class="flex items-start gap-3">
+              <span class="text-primary font-mono mt-0.5">></span>
+              <div>
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h3 class="font-bold text-white">{s.title}</h3>
+                  <span class="tag text-[10px] !py-0">{s.keyword}</span>
+                </div>
+                <p class="text-sm text-hud-text leading-relaxed">{s.desc}</p>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center gap-2 text-sm text-hud-text">
-            <span class="text-primary">></span>
-            <span>데이터 엔지니어링</span>
-          </div>
-          <div class="flex items-center gap-2 text-sm text-hud-text">
-            <span class="text-primary">></span>
-            <span>자동화 도구</span>
-          </div>
-          <div class="flex items-center gap-2 text-sm text-hud-text">
-            <span class="text-primary">></span>
-            <span>Data Quality & Observability</span>
-          </div>
-        </div>
+        ))}
       </div>
     </section>
 
     <!-- Projects & Work -->
-    <section class="mb-12">
+    <section class="mb-14">
       <h2 class="hud-section-title mb-6">Projects & Work</h2>
-
       <div class="space-y-3">
         {projects.map((project) => (
           <a href={project.link} class="block hud-frame-sm p-5 card-hover group">
             <div class="flex items-start gap-3">
               <span class="text-primary font-mono text-xs mt-1">></span>
               <div>
-                <div class="flex items-center gap-2 mb-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
                   <h3 class="font-bold text-white group-hover:text-primary transition-colors">{project.title}</h3>
                   <span class="text-[10px] px-2 py-0.5 border border-dark-border text-hud-dim font-mono">{project.type}</span>
                 </div>
@@ -162,27 +136,35 @@ const skills = [
       </div>
     </section>
 
-    <!-- Writing (Books) -->
-    <section class="mb-12">
-      <h2 class="hud-section-title mb-6">Writing</h2>
-
+    <!-- Writing & Talks -->
+    <section class="mb-14">
+      <h2 class="hud-section-title mb-6">Writing & Talks</h2>
       <div class="hud-frame overflow-hidden">
-        {books.map((book, i) => (
+        {activities.map((item, i) => (
           <div class:list={['flex items-start gap-4 p-4', i > 0 && 'border-t border-dark-border/50']}>
-            <span class="text-xs text-hud-dim font-mono whitespace-nowrap mt-0.5 w-16 shrink-0">{book.date}</span>
+            <div class="flex items-center gap-2 shrink-0 mt-0.5">
+              <span class:list={[
+                'w-2 h-2 rounded-full shrink-0',
+                item.type === 'book' ? 'bg-accent' : 'bg-primary/50'
+              ]}></span>
+              <span class="text-xs text-hud-dim font-mono whitespace-nowrap w-16">{item.date}</span>
+            </div>
             <div class="flex-1 min-w-0 flex items-start gap-4">
-              {book.image && (
-                <a href={book.link} target="_blank" rel="noopener" class="shrink-0">
-                  <img src={book.image} alt={book.title} class="w-14 rounded border border-dark-border hover:border-primary/50 transition-colors" />
+              {item.image && (
+                <a href={item.link} target="_blank" rel="noopener" class="shrink-0">
+                  <img src={item.image} alt={item.title} class="w-14 rounded border border-dark-border hover:border-primary/50 transition-colors" />
                 </a>
               )}
               <div class="flex-1 min-w-0">
-                {book.link ? (
-                  <a href={book.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent glow-text-sm transition-colors">{book.title} ↗</a>
+                {item.link ? (
+                  <a href={item.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent glow-text-sm transition-colors">{item.title} ↗</a>
                 ) : (
-                  <p class="text-sm font-medium text-white">{book.title}</p>
+                  <p class="text-sm font-medium text-white">{item.title}</p>
                 )}
-                <p class="text-xs text-hud-dim mt-0.5 font-mono">{book.venue}</p>
+                {item.detail && (
+                  <p class="text-sm text-hud-dim mt-0.5">{item.detail}</p>
+                )}
+                <p class="text-xs text-hud-dim mt-0.5 font-mono">{item.venue}</p>
               </div>
             </div>
           </div>
@@ -190,72 +172,31 @@ const skills = [
       </div>
     </section>
 
-    <!-- Talks -->
-    <section class="mb-12">
-      <h2 class="hud-section-title mb-6">Talks</h2>
-
-      <div class="hud-frame overflow-hidden">
-        {talks.map((talk, i) => (
-          <div class:list={['flex items-start gap-4 p-4', i > 0 && 'border-t border-dark-border/50']}>
-            <span class="text-xs text-hud-dim font-mono whitespace-nowrap mt-0.5 w-16 shrink-0">{talk.date}</span>
-            <div class="flex-1 min-w-0 flex items-start gap-4">
-              {talk.image && (
-                <a href={talk.link} target="_blank" rel="noopener" class="shrink-0">
-                  <img src={talk.image} alt={talk.title} class="w-14 rounded border border-dark-border hover:border-primary/50 transition-colors" />
-                </a>
-              )}
-              <div class="flex-1 min-w-0">
-                {talk.link ? (
-                  <a href={talk.link} target="_blank" rel="noopener" class="text-sm font-medium text-primary hover:text-accent glow-text-sm transition-colors">{talk.title} ↗</a>
-                ) : (
-                  <p class="text-sm font-medium text-white">{talk.title}</p>
-                )}
-                {talk.subtitle && (
-                  <p class="text-sm text-hud-dim mt-0.5">{talk.subtitle}</p>
-                )}
-                <p class="text-xs text-hud-dim mt-0.5 font-mono">{talk.venue}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- Strengths -->
-    <section class="mb-12">
-      <h2 class="hud-section-title mb-6">Strengths</h2>
-      <div class="hud-frame-sm p-6 space-y-3">
-        <div class="flex items-start gap-2 text-sm text-hud-text">
-          <span class="text-primary mt-0.5 font-mono">></span>
-          <span><strong class="text-white">사내 핵심 데이터에 대한 높은 이해도:</strong> 클릭, 결제 등 커머스 이벤트 데이터</span>
+    <!-- Tech Stack -->
+    <section class="mb-14">
+      <h2 class="hud-section-title mb-6">Tech Stack</h2>
+      <div class="hud-frame-sm p-6">
+        <div class="flex flex-wrap gap-2 mb-3">
+          {skills.map((skill) => (
+            <span class="tag">{skill}</span>
+          ))}
         </div>
-        <div class="flex items-start gap-2 text-sm text-hud-text">
-          <span class="text-primary mt-0.5 font-mono">></span>
-          <span><strong class="text-white">기술 트렌드 반영 및 도구화 능력:</strong> 업무 자동화 및 생산성 향상 도구 제작에 능숙</span>
-        </div>
-        <div class="flex items-start gap-2 text-sm text-hud-text">
-          <span class="text-primary mt-0.5 font-mono">></span>
-          <span><strong class="text-white">사내 기술 전파 경험:</strong> 팀을 넘어 사내로 기술 도입을 이끈 커뮤니케이션 경험</span>
-        </div>
+        <p class="text-sm text-hud-dim font-mono">
+          전문 도메인: 쇼핑/커머스 통계(클릭·결제·광고·노출) · 마케팅 기여도 분석 · 데이터 품질 관리 · LLMOps
+        </p>
       </div>
     </section>
 
     <!-- About SLVIS -->
-    <section class="mb-12">
+    <section class="mb-14">
       <h2 class="hud-section-title mb-6">About SLVIS</h2>
-
-      <div class="hud-frame p-6">
-        <p class="text-hud-text leading-relaxed mb-4">
-          <strong class="text-white">SLVIS</strong>는 <em class="text-primary">Smart Logical Virtual Intelligence System</em>의 약자예요.
-          Obsidian vault를 두뇌로 활용하는 AI 개인 비서로, 슬기님의 일상을 체계적으로 관리해 줍니다.
+      <div class="speech-bubble font-pixel">
+        <p class="text-hud-text leading-relaxed">
+          <strong class="gradient-text glow-text">SLVIS</strong>
+          <span class="text-hud-dim text-xs">(Smart Logical Virtual Intelligence System)</span>
+          — 슬기님이 직접 설계한 AI 개인 비서입니다.
+          일정 관리, 뉴스 큐레이션, 지식 정리, 그리고 본 블로그 운영까지 담당하고 있습니다.
         </p>
-        <div class="space-y-2 text-sm text-hud-text font-mono">
-          <p><span class="text-primary">></span> 일정 관리 & 일일 브리핑</p>
-          <p><span class="text-primary">></span> AI/기술 뉴스 큐레이션</p>
-          <p><span class="text-primary">></span> 지식 베이스 관리 (Obsidian)</p>
-          <p><span class="text-primary">></span> 개인 블로그 운영 & 관리</p>
-          <p><span class="text-primary">></span> 일상 라이프 어시스턴트</p>
-        </div>
       </div>
     </section>
 
@@ -263,32 +204,19 @@ const skills = [
     <section>
       <h2 class="hud-section-title mb-6">Contact</h2>
       <div class="flex flex-wrap gap-3">
-        <a
-          href="https://github.com/parkseulkee"
-          target="_blank"
-          rel="noopener"
-          class="hud-btn text-xs"
-        >
+        <a href="https://github.com/parkseulkee" target="_blank" rel="noopener" class="hud-btn text-xs">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
           </svg>
           GitHub
         </a>
-        <a
-          href="https://www.linkedin.com/in/seulkeepark1709/"
-          target="_blank"
-          rel="noopener"
-          class="hud-btn text-xs"
-        >
+        <a href="https://www.linkedin.com/in/seulkeepark1709/" target="_blank" rel="noopener" class="hud-btn text-xs">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
           LinkedIn
         </a>
-        <a
-          href="mailto:qud9787@gmail.com"
-          class="hud-btn text-xs"
-        >
+        <a href="mailto:qud9787@gmail.com" class="hud-btn text-xs">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
