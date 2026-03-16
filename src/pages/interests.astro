@@ -73,9 +73,9 @@ const topics = Array.from(topicMap.entries())
       <div id="bubble-map" class="relative w-full rounded" style="height: 480px; background: rgba(0, 5, 10, 0.6); border: 1px solid rgba(0, 212, 255, 0.1);">
         <canvas id="bubble-canvas" class="absolute inset-0 w-full h-full"></canvas>
       </div>
-      <!-- Mobile: 하단 고정 패널 / Desktop: 버블 옆 툴팁 -->
-      <div id="bubble-tooltip" class="fixed md:absolute bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto pointer-events-none opacity-0 transition-opacity duration-200 z-30 md:max-w-[280px]">
-        <div class="hud-frame p-4 md:p-3 rounded-t-lg md:rounded-lg">
+      <!-- Desktop only: 버블 옆 툴팁 -->
+      <div id="bubble-tooltip" class="hidden md:block absolute pointer-events-none opacity-0 transition-opacity duration-200 z-30 max-w-[280px]">
+        <div class="hud-frame p-3">
           <p id="tooltip-title" class="font-bold text-white text-sm mb-1"></p>
           <p id="tooltip-count" class="text-xs text-primary font-mono mb-2"></p>
           <div id="tooltip-articles" class="space-y-1"></div>
@@ -315,30 +315,19 @@ const topics = Array.from(topicMap.entries())
         .map(a => `<p class="text-xs text-hud-dim">· ${a.title}</p>`)
         .join('');
 
-      if (isMobile) {
-        // 모바일: 화면 하단 고정 (CSS가 처리)
-        tooltip.style.left = '';
-        tooltip.style.top = '';
-      } else {
-        // 데스크톱: 버블 옆에 표시
-        const containerRect = container.getBoundingClientRect();
-        const parentRect = container.parentElement.getBoundingClientRect();
-        let tx = node.x + node.r + 12;
-        let ty = node.y - 20 + (containerRect.top - parentRect.top);
-        if (tx + 280 > width) tx = node.x - node.r - 292;
-        if (ty < 0) ty = 0;
-        tooltip.style.left = tx + 'px';
-        tooltip.style.top = ty + 'px';
-      }
+      const containerRect = container.getBoundingClientRect();
+      const parentRect = container.parentElement.getBoundingClientRect();
+      let tx = node.x + node.r + 12;
+      let ty = node.y - 20 + (containerRect.top - parentRect.top);
+      if (tx + 280 > width) tx = node.x - node.r - 292;
+      if (ty < 0) ty = 0;
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top = ty + 'px';
       tooltip.style.opacity = '1';
-      tooltip.style.pointerEvents = isMobile ? 'auto' : 'none';
     }
 
     function hideTooltip() {
-      if (tooltip) {
-        tooltip.style.opacity = '0';
-        tooltip.style.pointerEvents = 'none';
-      }
+      if (tooltip) tooltip.style.opacity = '0';
     }
 
     // Desktop: hover
@@ -359,22 +348,21 @@ const topics = Array.from(topicMap.entries())
       hideTooltip();
     });
 
-    // Mobile: tap to toggle
-    let tappedNode = null;
+    // Mobile: 버블 탭 → 해당 토픽 카드로 스크롤
     container.addEventListener('click', (e) => {
+      if (!isMobile) return;
       const rect = container.getBoundingClientRect();
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
       const found = findNode(cx, cy);
 
-      if (found && found !== tappedNode) {
-        tappedNode = found;
-        hoveredNode = found;
-        showTooltip(found);
-      } else {
-        tappedNode = null;
-        hoveredNode = null;
-        hideTooltip();
+      if (found) {
+        const topicCard = document.querySelector(`[data-topic="${found.name}"]`);
+        if (topicCard) {
+          topicCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          topicCard.classList.add('ring-1', 'ring-primary/50');
+          setTimeout(() => topicCard.classList.remove('ring-1', 'ring-primary/50'), 2000);
+        }
       }
     });
 
