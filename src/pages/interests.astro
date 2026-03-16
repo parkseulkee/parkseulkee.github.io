@@ -1,0 +1,371 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// 아티클 기반 관심사 데이터
+// Obsidian 아티클과 동기화하여 업데이트
+const articles = [
+  {
+    title: 'rtk - AI 코딩 에이전트 토큰 절감 CLI',
+    date: '2026-03-16',
+    url: 'https://github.com/rtk-ai/rtk',
+    topics: ['AI 코딩 에이전트', '토큰 최적화', '오픈소스 도구', 'CLI'],
+  },
+  {
+    title: '진짜 내 일을 위한 Agentic Workflow',
+    date: '2026-03-16',
+    url: 'https://youtu.be/EQ-Rnx-k-Ec',
+    topics: ['AI 코딩 에이전트', 'Agentic Workflow', '자동화'],
+  },
+  {
+    title: 'ralph-loop — AI 코딩 에이전트 루프 자동화',
+    date: '2026-03-14',
+    url: 'https://pageai.pro/blog/long-running-ai-coding-agents-ralph-loop',
+    topics: ['AI 코딩 에이전트', '자동화', '오픈소스 도구'],
+  },
+  {
+    title: 'Context Hub와 Context Engineering',
+    date: '2026-03-16',
+    url: 'https://github.com/andrewyng/context-hub',
+    topics: ['Context Engineering', '프롬프트 엔지니어링', 'LLMOps', '오픈소스 도구'],
+  },
+  {
+    title: 'CLAUDE.md 잘 작성하는 법',
+    date: '2026-03-14',
+    url: 'https://code.claude.com/docs/en/memory',
+    topics: ['Claude Code', '프롬프트 엔지니어링', 'AI 코딩 에이전트'],
+  },
+  {
+    title: 'Claude Code skill.md 작성 가이드',
+    date: '2026-03-14',
+    url: 'https://docs.anthropic.com/en/docs/claude-code/skills',
+    topics: ['Claude Code', '프롬프트 엔지니어링', 'AI 코딩 에이전트'],
+  },
+];
+
+// 토픽별 집계
+const topicMap = new Map<string, { count: number; articles: typeof articles }>();
+for (const article of articles) {
+  for (const topic of article.topics) {
+    if (!topicMap.has(topic)) {
+      topicMap.set(topic, { count: 0, articles: [] });
+    }
+    const entry = topicMap.get(topic)!;
+    entry.count++;
+    entry.articles.push(article);
+  }
+}
+
+const topics = Array.from(topicMap.entries())
+  .map(([name, data]) => ({ name, ...data }))
+  .sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout title="Interests — SLVIS">
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <header class="mb-12 text-center">
+      <h1 class="text-3xl font-bold text-white mb-2 font-hud tracking-wide">Interest Map</h1>
+      <p class="text-hud-dim font-mono text-sm">슬기님이 최근 읽은 아티클 기반 관심사 맵</p>
+      <p class="text-hud-dim text-xs mt-1 font-mono">{articles.length}개 아티클 · {topics.length}개 토픽</p>
+    </header>
+
+    <!-- Bubble Map Canvas -->
+    <div class="relative mb-12">
+      <div id="bubble-map" class="relative w-full overflow-hidden rounded" style="height: 480px; background: rgba(0, 5, 10, 0.6); border: 1px solid rgba(0, 212, 255, 0.1);">
+        <canvas id="bubble-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        <!-- Tooltip -->
+        <div id="bubble-tooltip" class="absolute pointer-events-none opacity-0 transition-opacity duration-200 z-20" style="max-width: 280px;">
+          <div class="hud-frame p-3">
+            <p id="tooltip-title" class="font-bold text-white text-sm mb-1"></p>
+            <p id="tooltip-count" class="text-xs text-primary font-mono mb-2"></p>
+            <div id="tooltip-articles" class="space-y-1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Topic Legend -->
+    <section>
+      <h2 class="hud-section-title mb-6">Topics</h2>
+      <div class="grid sm:grid-cols-2 gap-3">
+        {topics.map((topic) => (
+          <div class="hud-frame-sm p-4" data-topic={topic.name}>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-white text-sm">{topic.name}</h3>
+              <span class="tag text-[10px] !py-0">{topic.count}편</span>
+            </div>
+            <ul class="space-y-1">
+              {topic.articles.map((a) => (
+                <li class="text-xs text-hud-dim flex items-start gap-1.5">
+                  <span class="text-primary/50 mt-0.5">·</span>
+                  <a href={a.url} target="_blank" rel="noopener" class="hover:text-primary transition-colors">{a.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ topics, articles }}>
+  function initBubbleMap() {
+    const canvas = document.getElementById('bubble-canvas');
+    const container = document.getElementById('bubble-map');
+    const tooltip = document.getElementById('bubble-tooltip');
+    const tooltipTitle = document.getElementById('tooltip-title');
+    const tooltipCount = document.getElementById('tooltip-count');
+    const tooltipArticles = document.getElementById('tooltip-articles');
+
+    if (!canvas || !container) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    let width = container.clientWidth;
+    let height = container.clientHeight;
+
+    function resize() {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }
+
+    resize();
+
+    // Create bubble nodes from topics
+    const maxCount = Math.max(...topics.map(t => t.count));
+    const minR = 35;
+    const maxR = 75;
+
+    const nodes = topics.map((topic, i) => {
+      const ratio = topic.count / maxCount;
+      const r = minR + (maxR - minR) * ratio;
+      // Start from center with random offset
+      const angle = (i / topics.length) * Math.PI * 2;
+      const dist = 60 + Math.random() * 40;
+      return {
+        x: width / 2 + Math.cos(angle) * dist,
+        y: height / 2 + Math.sin(angle) * dist,
+        vx: 0,
+        vy: 0,
+        r,
+        name: topic.name,
+        count: topic.count,
+        articles: topic.articles,
+        hue: 185 + (i * 17) % 40, // Vary cyan hue slightly
+        alpha: 0,        // For fade-in
+        targetAlpha: 1,
+      };
+    });
+
+    // Simple force simulation
+    function simulate() {
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      for (const node of nodes) {
+        // Gravity toward center
+        const dx = centerX - node.x;
+        const dy = centerY - node.y;
+        node.vx += dx * 0.001;
+        node.vy += dy * 0.001;
+      }
+
+      // Collision avoidance
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const minDist = a.r + b.r + 8;
+
+          if (dist < minDist && dist > 0) {
+            const force = (minDist - dist) / dist * 0.05;
+            const fx = dx * force;
+            const fy = dy * force;
+            a.vx -= fx;
+            a.vy -= fy;
+            b.vx += fx;
+            b.vy += fy;
+          }
+        }
+      }
+
+      // Update positions
+      for (const node of nodes) {
+        node.vx *= 0.85;
+        node.vy *= 0.85;
+        node.x += node.vx;
+        node.y += node.vy;
+
+        // Keep in bounds
+        node.x = Math.max(node.r + 10, Math.min(width - node.r - 10, node.x));
+        node.y = Math.max(node.r + 10, Math.min(height - node.r - 10, node.y));
+
+        // Fade in
+        node.alpha += (node.targetAlpha - node.alpha) * 0.03;
+      }
+    }
+
+    // Draw
+    let hoveredNode = null;
+    let time = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      time++;
+
+      // Draw connection lines between nodes that share articles
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i];
+          const b = nodes[j];
+          // Check if they share articles
+          const shared = a.articles.filter(aa =>
+            b.articles.some(ba => ba.title === aa.title)
+          ).length;
+          if (shared > 0) {
+            const alpha = Math.min(0.15 * shared, 0.3) * a.alpha * b.alpha;
+            ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw bubbles
+      for (const node of nodes) {
+        const isHovered = node === hoveredNode;
+        const pulse = Math.sin(time * 0.02 + node.hue) * 0.05;
+        const alpha = node.alpha;
+
+        // Outer glow
+        const glowR = node.r + (isHovered ? 15 : 8);
+        const glow = ctx.createRadialGradient(node.x, node.y, node.r * 0.5, node.x, node.y, glowR);
+        glow.addColorStop(0, `hsla(${node.hue}, 80%, 50%, ${(isHovered ? 0.15 : 0.08) * alpha})`);
+        glow.addColorStop(1, `hsla(${node.hue}, 80%, 50%, 0)`);
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, glowR, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        // Circle fill
+        const fillAlpha = (isHovered ? 0.2 : 0.08 + pulse) * alpha;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${node.hue}, 70%, 40%, ${fillAlpha})`;
+        ctx.fill();
+
+        // Circle border
+        ctx.strokeStyle = `hsla(${node.hue}, 80%, 60%, ${(isHovered ? 0.8 : 0.35 + pulse * 2) * alpha})`;
+        ctx.lineWidth = isHovered ? 2 : 1;
+        ctx.stroke();
+
+        // Text
+        if (alpha > 0.3) {
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // Topic name
+          const fontSize = Math.max(11, Math.min(14, node.r * 0.3));
+          ctx.font = `bold ${fontSize}px 'Pretendard', sans-serif`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${(isHovered ? 1 : 0.9) * alpha})`;
+          ctx.fillText(node.name, node.x, node.y - 6);
+
+          // Count
+          ctx.font = `${Math.max(10, fontSize - 2)}px 'Orbitron', monospace`;
+          ctx.fillStyle = `hsla(${node.hue}, 80%, 70%, ${0.8 * alpha})`;
+          ctx.fillText(`${node.count}`, node.x, node.y + 10);
+        }
+      }
+
+      simulate();
+      requestAnimationFrame(draw);
+    }
+
+    // Mouse interaction
+    let mouseX = 0;
+    let mouseY = 0;
+
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+
+      let found = null;
+      for (const node of nodes) {
+        const dx = mouseX - node.x;
+        const dy = mouseY - node.y;
+        if (dx * dx + dy * dy < node.r * node.r) {
+          found = node;
+          break;
+        }
+      }
+
+      hoveredNode = found;
+      canvas.style.cursor = found ? 'pointer' : 'default';
+
+      if (found && tooltip && tooltipTitle && tooltipCount && tooltipArticles) {
+        tooltipTitle.textContent = found.name;
+        tooltipCount.textContent = `${found.count}편의 아티클`;
+        tooltipArticles.innerHTML = found.articles
+          .map(a => `<p class="text-xs text-hud-dim">· ${a.title}</p>`)
+          .join('');
+
+        // Position tooltip
+        let tx = found.x + found.r + 12;
+        let ty = found.y - 20;
+        if (tx + 280 > width) tx = found.x - found.r - 292;
+        if (ty < 10) ty = 10;
+        if (ty + 150 > height) ty = height - 150;
+
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+        tooltip.style.opacity = '1';
+      } else if (tooltip) {
+        tooltip.style.opacity = '0';
+      }
+    });
+
+    container.addEventListener('mouseleave', () => {
+      hoveredNode = null;
+      if (tooltip) tooltip.style.opacity = '0';
+    });
+
+    window.addEventListener('resize', () => {
+      resize();
+      // Re-center nodes
+      for (const node of nodes) {
+        node.x = Math.min(node.x, width - node.r - 10);
+        node.y = Math.min(node.y, height - node.r - 10);
+      }
+    });
+
+    // Start with delayed fade-in per node
+    nodes.forEach((node, i) => {
+      node.targetAlpha = 0;
+      setTimeout(() => {
+        node.targetAlpha = 1;
+      }, 200 + i * 150);
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  document.addEventListener('astro:page-load', initBubbleMap);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBubbleMap);
+  } else {
+    initBubbleMap();
+  }
+</script>

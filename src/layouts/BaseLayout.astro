@@ -44,6 +44,10 @@ const isHome = pathname === '/' || pathname === '';
               Projects
               <span class="hud-nav-corner">&#x2519;</span>
             </a>
+            <a href="/interests" class:list={["hud-nav-link", "!tracking-normal", "sm:!tracking-widest", pathname.startsWith('/interests') && "active"]}>
+              Interests
+              <span class="hud-nav-corner">&#x2519;</span>
+            </a>
             <a href="/about" class:list={["hud-nav-link", "!tracking-normal", "sm:!tracking-widest", pathname.startsWith('/about') && "active"]}>
               About
               <span class="hud-nav-corner">&#x2519;</span>
