@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="AI 데이터 분석 Agent — SLVIS">
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <div class="flex items-center gap-2 text-sm text-hud-dim mb-4">
+        <span class="px-2 py-0.5 border border-dark-border text-hud-dim font-mono text-xs">프로젝트</span>
+        <span>·</span>
+        <span>네이버</span>
+      </div>
+      <h1 class="text-3xl font-bold text-white leading-tight mb-3">
+        AI 데이터 분석 Agent
+      </h1>
+      <p class="text-hud-dim text-lg">비개발 직군도 셀프서비스로 데이터를 분석할 수 있도록</p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        {['LangGraph', 'MCP', 'Python', 'Jupyter'].map(t => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="prose max-w-none">
+      <h2>배경</h2>
+      <p>
+        데이터 분석 업무에서 SQL 기반의 AI Agent는 이미 많이 시도되고 있지만, 두 가지 한계가 있었습니다.
+        분석 결과를 <strong>시각화</strong>하기 어렵고, 하나의 세션 안에서 결과를 보고 추가 질문을 이어가는 <strong>드릴다운</strong>이 자연스럽지 않다는 점입니다.
+      </p>
+      <p>
+        이 문제를 해결하기 위해 SQL이 아닌 <strong>Python 코드 실행 기반</strong>의 데이터 분석 Agent를 직접 설계하고 개발했습니다.
+      </p>
+
+      <h2>설계 — 왜 Code-Base인가</h2>
+      <ul>
+        <li><strong>시각화</strong> — Python 코드 실행이므로 matplotlib, plotly 등으로 분석 결과를 즉시 시각화 가능</li>
+        <li><strong>드릴다운</strong> — Jupyter 커널 세션을 유지하여, 이전 결과를 기반으로 자연스럽게 추가 분석을 이어갈 수 있음</li>
+        <li><strong>유연성</strong> — SQL로 표현하기 어려운 통계 분석, 데이터 변환도 Python으로 자유롭게 처리</li>
+      </ul>
+
+      <h2>구현</h2>
+      <ul>
+        <li><strong>LangGraph 기반 Agent</strong> — 사용자 질문을 이해하고, Python 코드를 생성·실행하여 결과를 해석하는 워크플로우 구성</li>
+        <li><strong>MCP 연동</strong> — Jupyter 커널, 사내 Confluence, 사내 Jira를 MCP로 연결하여 Agent가 필요한 컨텍스트에 직접 접근</li>
+        <li><strong>Jupyter 커널 세션 유지</strong> — 하나의 분석 세션 안에서 변수와 상태를 유지하며 반복적으로 드릴다운 분석 수행</li>
+      </ul>
+
+      <h2>실적용 — 데이터 거버넌스</h2>
+      <p>
+        이 Agent를 활용하여 사내 레거시 화면/영역 코드를 신규 코드 체계로 전환하는 데이터 거버넌스 작업을 수행했습니다.
+        특히 영역 코드 약 <strong>56만 건</strong>의 매핑·검증·전환 작업에 실적용하여, 수작업으로는 비현실적인 규모의 작업을 효율적으로 처리했습니다.
+      </p>
+
+      <h2>팀 확산</h2>
+      <p>
+        팀에 공유하여 기획자, CS 담당자 등 비개발 직군도 활용했습니다.
+        기존에는 데이터 확인이 필요할 때마다 엔지니어에게 요청해야 했지만,
+        이 도구를 통해 <strong>셀프서비스로 데이터를 직접 조회·분석</strong>할 수 있게 되어 팀 전체의 생산성이 향상되었습니다.
+      </p>
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-dark-border">
+      <a href="/about" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium font-mono glow-text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        About으로 돌아가기
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

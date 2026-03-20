@@ -21,18 +21,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </header>
 
     <div class="prose max-w-none">
-      <h2>프로젝트 소개</h2>
-      <p>
-        마케팅 채널별 기여도를 정량적으로 측정하기 위해, <strong>Markov Chain 모델</strong>과 게임 이론 기반의
-        <strong>Google Fractribution 모델(Shapley Value)</strong>을 직접 데이터로 비교 분석하여 네이버 쇼핑에 최적화된
-        DDA 모델을 선정·적용한 프로젝트입니다.
-      </p>
-      <p>
-        당시 DDA 모델을 실데이터로 비교 분석한 자료 자체가 드문 상황에서, 두 모델의 이론적 특성과 실제 데이터 분석 결과를
-        함께 검토하여 객관적인 근거를 바탕으로 모델을 선정했습니다.
-      </p>
-
-      <h2>배경: 왜 DDA인가?</h2>
+      <h2>배경</h2>
       <p>
         기존의 Last Click, First Click 등 <strong>규칙 기반(Rule-based) 모델</strong>은 구현이 단순하지만,
         실제 고객 여정의 복잡성을 반영하지 못합니다. 예를 들어 Last Click 모델은 전환 직전 채널에 기여도 100%를 부여하여
@@ -41,6 +30,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <p>
         DDA(Data-Driven Attribution)는 실제 전환·비전환 경로 데이터를 기반으로 각 터치포인트의 기여도를 알고리즘적으로
         산출합니다. 채널 간 상호작용과 순서, 빈도를 반영하여 기여도를 공정하게 분배하는 것이 핵심입니다.
+      </p>
+      <p>
+        2023년 프로젝트 시작 당시, 시니어 엔지니어분들이 Markov Chain과 Shapley Value 기반 모델을 후보로 서베이해둔 상태였습니다.
+        하지만 어떤 모델이 우리 데이터에 적합한지는 판단이 되지 않았고, 실데이터로 비교 분석한 사례도 거의 찾기 어려웠습니다.
+        이에 <strong>직접 두 모델을 실데이터에 적용하고 산출물을 비교 분석하여 모델 선정을 리드</strong>했습니다.
       </p>
 
       <h2>두 모델 비교 분석</h2>
@@ -70,7 +64,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         효율성·대칭성·가산성·더미 플레이어 등 공정 배분의 4가지 공리를 만족하는 유일한 해법입니다.
       </p>
       <ul>
-        <li><strong>장점</strong> — 접촉 순서가 아닌 실제 기여 여부를 기반으로 평가하여 빈도 편향 해소, 수학적으로 증명된 공정성 보장, 사용자 단위 분수 기여도(fractional credit) 산출 가능</li>
+        <li><strong>장점</strong> — 실제 사용자의 터치포인트 순서를 반영하면서도 빈도 편향을 해소, 수학적으로 증명된 공정성 보장, 사용자 단위 분수 기여도(fractional credit) 산출 가능</li>
         <li><strong>단점</strong> — 채널 수(n)에 대해 2ⁿ의 연산 복잡도를 가지므로 채널 수가 많을수록 계산 비용 증가</li>
       </ul>
 
@@ -97,7 +91,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <tr>
             <td><strong>채널 순서 반영</strong></td>
             <td>O (핵심 가정)</td>
-            <td>X (조합 기반)</td>
+            <td>O (사용자별 터치포인트 순서 반영)</td>
           </tr>
           <tr>
             <td><strong>빈도 편향</strong></td>
@@ -119,10 +113,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <h2>역할 및 기여</h2>
       <ul>
-        <li><strong>기획 및 개발 주도</strong> — 모델 선정 기준 수립부터 구현, 검증까지 전 과정 리딩</li>
-        <li>Markov Chain과 Fractribution 모델을 <strong>실제 네이버 쇼핑 데이터</strong>에 적용하여 채널별 기여도 분포, 편향 여부, 안정성을 직접 비교 분석</li>
-        <li>두 모델의 이론적 특성과 데이터 분석 결과를 종합하여 <strong>Fractribution 모델 채택</strong>이라는 결론을 객관적인 근거로 도출</li>
-        <li>내부 데이터 특성에 맞춰 Google Fractribution 알고리즘을 커스터마이징하여 적용</li>
+        <li><strong>모델 선정 리드</strong> — 두 모델을 실제 네이버 쇼핑 데이터에 적용하여 채널별 기여도 분포, 편향 여부, 안정성을 직접 비교 분석하고, Fractribution 모델 채택을 객관적 근거로 도출</li>
+        <li><strong>대규모 데이터 효율화</strong> — Fractribution 모델은 O(2ⁿ) 연산 복잡도와 대규모 유저 데이터로 인해 효율적인 생성 방법이 필요. Spark 기반으로 내부 데이터 특성에 맞춰 알고리즘을 커스터마이징하여 적용</li>
+        <li><strong>사내 데이터 유통</strong> — 산출된 유저별 마케팅 채널 기여도 데이터를 사내 데이터 마트로 유통하여, 리타겟팅 광고 등 타 서비스에서도 활용</li>
       </ul>
 
       <h2>최종 선택: Fractribution 모델</h2>

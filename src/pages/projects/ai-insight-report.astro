@@ -21,29 +21,36 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </header>
 
     <div class="prose max-w-none">
-      <h2>프로젝트 소개</h2>
-      <p>기존 BizAdvisor 대시보드의 수치 기반 리포트를 넘어, <strong>LLM을 활용한 텍스트 중심의 AI 데이터 분석 인사이트 리포트</strong>를 개발한 프로젝트입니다.</p>
+      <h2>배경</h2>
+      <p>
+        BizAdvisor는 사업자에게 통계 데이터를 제공하지만, 많은 소규모 사업자들이 데이터를 어떻게 해석해야 하는지 어려움을 겪고 있었습니다.
+        팀 기획자가 사업주 대상 강의와 컨설팅을 진행했지만, 근본적인 해결이 되지 않았습니다.
+        통계 데이터는 정해진 디멘전·메트릭을 하나씩 제공하다 보니, 유입수가 떨어졌을 때 특정 키워드 문제인지 상품 문제인지 연결해서 보는 것을 어려워했습니다.
+      </p>
 
-      <h2>주요 기여</h2>
+      <h2>해결 방법</h2>
+      <p>기획부터 모든 개발을 직접 리드하여, LLM이 데이터를 자동으로 해석하고 개선 방안을 제시하는 인사이트 리포트를 Beta로 개발했습니다.</p>
       <ul>
-        <li><strong>LangChain 기반의 분석 및 리포트 자동 생성 파이프라인 설계</strong>
-          <ul>
-            <li>데이터 분석 결과를 LLM이 해석하여 자연어 기반의 인사이트를 자동 생성</li>
-          </ul>
-        </li>
-        <li><strong>Langfuse 도입 및 LLMOps 도구 개발 주도</strong>
-          <ul>
-            <li>프롬프트 추적, 품질 평가, 에러 분석 전반의 워크플로우를 체계화</li>
-            <li>프롬프트 버전 관리 및 A/B 테스트 환경 구축</li>
-          </ul>
-        </li>
+        <li><strong>지표 비교 및 드릴다운 워크플로우</strong> — 지난주 vs 이번주 주요 지표(결제금액, 유입수, ROAS 등)를 비교하고, 지표 변동의 원인을 찾기 위해 관련 하위 디멘전을 자동으로 드릴다운. 이 과정에서 판단은 LLM이 수행.</li>
+        <li><strong>LangChain 기반 파이프라인</strong> — 각 주요 지표별로 관련 하위 디멘전을 드릴다운하여 원인을 찾고, 해결 방안을 코멘트하는 워크플로우를 설계</li>
+        <li><strong>사내 모델(HCX) 기반 운영</strong> — 허용된 RPM/TPM 제약으로 상위 500개 스토어를 대상으로 Beta 제공 (2024.12~)</li>
       </ul>
 
-      <h2>성과 및 특징</h2>
+      <h2>LLMOps — 프롬프트 엔지니어링 도구 개발</h2>
+      <p>
+        인사이트 리포트 개발 과정에서 프롬프트가 지속적으로 업데이트되고, 변경된 프롬프트를 Evaluation하여 평가 지표를 기반으로 반영 여부를 결정해야 했습니다.
+        이 과정이 엑셀이나 GitHub 이슈로 관리되어 추적이 어려웠습니다.
+      </p>
       <ul>
-        <li><strong>실제 프로덕션 환경에서 운영 경험 보유</strong></li>
-        <li>LLMOps 관련 경험을 정리하여 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">D2&NE 공유글</a> 작성</li>
-        <li>이 경험이 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a> 서적 출판으로 이어짐</li>
+        <li><strong>프롬프트 엔지니어링 도구 직접 개발</strong> — 프롬프트·모델 조합을 변경하면서 평가 지표를 산출하고, 최종 배포할 조합을 결정하는 도구를 제작</li>
+        <li><strong>Langfuse 도입</strong> — 프롬프트 추적, 품질 평가, 에러 분석 워크플로우를 체계화</li>
+      </ul>
+
+      <h2>성과</h2>
+      <ul>
+        <li>기획부터 개발까지 <strong>직접 리드</strong>하여 프로덕션 배포</li>
+        <li>프롬프트 엔지니어링 도구 개발 경험을 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">D2&NE 공유글</a>로 정리</li>
+        <li>실무 경험을 체계화하여 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a> 출간 — 프롬프트 엔지니어링, RAG(Pinecone), Agent까지 LLMOps 전반을 다루는 실전서</li>
       </ul>
     </div>
 
