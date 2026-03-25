@@ -44,8 +44,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <h2>데이터 모델링 — 도메인 중심 스키마 설계</h2>
       <p>다양한 원천 시스템에서 유입되는 이벤트 데이터를 사업자가 소비하기 쉬운 형태로 재구성하기 위해, <strong>판매</strong>와 <strong>유입</strong> 두 개의 도메인 모델로 정규화했습니다.</p>
       <ul>
-        <li><strong>판매 도메인</strong> — 결제 Fact 테이블을 중심으로 일자·카테고리·상품·배송유형 등 디멘전을 비정규화한 Wide 마트를 구성하여 Elasticsearch에 적재. 서빙 레이어에서는 디멘전 필터와 단순 집계(SUM, AVG)만으로 다양한 뷰를 생성할 수 있도록 사전 집계 구조를 설계.</li>
-        <li><strong>유입 도메인</strong> — 유저별 터치포인트를 시간축으로 정렬하고, Window Function 기반으로 세션을 구분하여 유입→광고(ROAS)→전환(결제) 퍼널을 구성. 기여모델(Last-click, DDA)별로 전환 기여도를 분배하며, 유입 날짜 기준 증분 업데이트 방식으로 서빙.</li>
+        <li><strong>판매 도메인</strong> — 결제 Fact 테이블을 중심으로 일자, 카테고리, 상품, 배송 유형 등 주요 Dimension을 비정규화(Denormalization)한 Wide Table을 구축하여 Elasticsearch에 적재. 서빙 레이어에서 복잡한 연산 없이 필터링과 단순 집계(SUM, AVG)만으로 실시간 다차원 분석 뷰를 생성할 수 있도록 사전 집계(Pre-aggregation) 구조 설계.</li>
+        <li><strong>유입 도메인</strong> — 유저별 터치포인트를 시간축으로 정렬하고, Window Function 기반의 세션화(Sessionization)를 통해 유입부터 최종 전환(결제)까지의 전환 경로(Conversion Path)를 구조화. Last-click 및 DDA(Shapley Value 등) 모델별로 기여도를 산출하며, 유입 일자 기준의 증분 업데이트(Incremental Update) 방식을 채택하여 데이터 정합성과 처리 효율성 확보.</li>
       </ul>
       <p>
         결제·광고·노출 등 원천 데이터는 각기 다른 부서에서 관리되어 스키마와 포맷이 상이합니다.
@@ -58,13 +58,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <li><strong>Spark 기반 배치 파이프라인 운영 및 성능 최적화</strong>
           <ul>
             <li>대규모 쇼핑 이벤트 데이터의 일/시간 단위 집계 처리</li>
-            <li>단순 JOIN 대신 Window Function(ROW_NUMBER, LAG/LEAD, RANK 등)을 활용하여 유저별 세션 구분, 터치포인트 순서 정렬, 증분 집계 등을 효율적으로 처리</li>
-            <li>파이프라인 병목 분석 및 쿼리/파티셔닝 최적화를 통한 처리 성능 개선</li>
+            <li><strong>Window Function 기반 세션화(Sessionization) 로직 혁신</strong> — 기존 <code>groupBy</code> 후 <code>collect_list</code> + UDF 방식의 메모리 점유 문제를 Window Function(<code>LAG</code>, <code>SUM OVER</code>)으로 전환하여 해결. 특정 헤비 유저/어뷰징 트래픽으로 인한 Executor OOM을 원천 차단하고 파이프라인 안정성 확보</li>
+            <li><strong>Shapley Value 모델 생성 알고리즘 분산 최적화</strong> — 단일 Task(Driver)에서 수행되던 기여도 연산 로직을 <code>Broadcast Variable</code>과 <code>mapPartitions</code>를 활용한 분산 처리 구조로 재설계. Driver Memory 의존성을 제거하여 메모리 사용량 75% 절감(8GB → 2GB) 및 전체 처리 시간 1분 30초 내외로 단축
+              → <a href="/blog/dda-pipeline-optimization" class="text-primary hover:text-accent">상세 기술 포스팅</a>
+            </li>
           </ul>
         </li>
         <li><strong>Elasticsearch를 활용한 데이터 서빙</strong>
           <ul>
-            <li>집계된 통계 데이터를 Elasticsearch에 인덱싱하여 실시간 검색·대시보드 서비스 지원</li>
+            <li>집계된 통계 데이터를 Elasticsearch에 인덱싱하여 실시간 대시보드 서비스 지원</li>
             <li>Java + Spring 기반 REST API의 디멘전별 집계·조회 기능 서포트</li>
           </ul>
         </li>
