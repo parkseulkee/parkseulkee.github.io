@@ -42,39 +42,57 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </p>
 
       <h2>데이터 모델링 — 도메인 중심 스키마 설계</h2>
-      <p>다양한 원천 시스템에서 유입되는 이벤트 데이터를 사업자가 소비하기 쉬운 형태로 재구성하기 위해, <strong>판매</strong>와 <strong>유입</strong> 두 개의 도메인 모델로 정규화했습니다.</p>
+      <p>다양한 이벤트 데이터를 사업자가 소비하기 쉬운 형태로 재구성하기 위해, <strong>판매</strong>와 <strong>유입</strong> 두 개의 도메인 모델로 정규화했습니다.</p>
       <ul>
-        <li><strong>판매 도메인</strong> — 결제 Fact 테이블을 중심으로 일자, 카테고리, 상품, 배송 유형 등 주요 Dimension을 비정규화(Denormalization)한 Wide Table을 구축하여 Elasticsearch에 적재. 서빙 레이어에서 복잡한 연산 없이 필터링과 단순 집계(SUM, AVG)만으로 실시간 다차원 분석 뷰를 생성할 수 있도록 사전 집계(Pre-aggregation) 구조 설계.</li>
-        <li><strong>유입 도메인</strong> — 유저별 터치포인트를 시간축으로 정렬하고, Window Function 기반의 세션화(Sessionization)를 통해 유입부터 최종 전환(결제)까지의 전환 경로(Conversion Path)를 구조화. Last-click 및 DDA(Shapley Value 등) 모델별로 기여도를 산출하며, 유입 일자 기준의 증분 업데이트(Incremental Update) 방식을 채택하여 데이터 정합성과 처리 효율성 확보.</li>
+        <li><strong>판매 도메인</strong> — 결제 Fact 테이블을 중심으로 일자, 카테고리, 상품, 배송 유형 등 주요 Dimension을 비정규화한 Wide Table로 설계하여 ES 적재. 서빙 레이어에서 복잡한 연산 없이 필터링과 단순 집계(SUM, AVG)만으로 다차원 분석 뷰를 생성할 수 있도록 사전 집계. 고정된 정적 통계 뷰에 국한되지 않고, 향후 디멘전 조합이 추가되거나 변경되어도 인덱스 재설계 없이 즉각 대응할 수 있는 확장성을 고려.</li>
+        <li><strong>유입 도메인</strong> — 유저별 터치포인트를 시간축으로 정렬하고, Window Function 기반의 세션화를 통해 유입부터 최종 전환(결제)까지의 전환 경로(Conversion Path)를 구조화. Last-click 및 DDA(Shapley Value 등) 모델별로 기여도를 산출하며, 유입 시점과 결제 시점의 간극을 극복하기 위해 유입 일자 기준의 14일간의 룩백 윈도우 동안 증분 업데이트 방식을 채택하여 데이터 정합성과 처리 효율성 확보.</li>
       </ul>
-      <p>
-        결제·광고·노출 등 원천 데이터는 각기 다른 부서에서 관리되어 스키마와 포맷이 상이합니다.
-        각 데이터 오너와 직접 커뮤니케이션하며 데이터 계약(Data Contract)을 정의하고 통합하는 과정을 주도했습니다.
-        최종 서빙 데이터는 중복을 제거하고, 쿼리 성능에 최적화된 구조로 설계했습니다.
-      </p>
 
       <h2>데이터 파이프라인</h2>
       <ul>
-        <li><strong>Spark 기반 배치 파이프라인 운영 및 성능 최적화</strong>
+        <li><strong>분산 처리 최적화 (Spark)</strong>
           <ul>
-            <li>대규모 쇼핑 이벤트 데이터의 일/시간 단위 집계 처리</li>
-            <li><strong>Window Function 기반 세션화(Sessionization) 로직 혁신</strong> — 기존 <code>groupBy</code> 후 <code>collect_list</code> + UDF 방식의 메모리 점유 문제를 Window Function(<code>LAG</code>, <code>SUM OVER</code>)으로 전환하여 해결. 특정 헤비 유저/어뷰징 트래픽으로 인한 Executor OOM을 원천 차단하고 파이프라인 안정성 확보</li>
-            <li><strong>Shapley Value 모델 생성 알고리즘 분산 최적화</strong> — 단일 Task(Driver)에서 수행되던 기여도 연산 로직을 <code>Broadcast Variable</code>과 <code>mapPartitions</code>를 활용한 분산 처리 구조로 재설계. Driver Memory 의존성을 제거하여 메모리 사용량 75% 절감(8GB → 2GB) 및 전체 처리 시간 1분 30초 내외로 단축
-              → <a href="/blog/dda-pipeline-optimization" class="text-primary hover:text-accent">상세 기술 포스팅</a>
+            <li><strong>Window Function 기반 세션화(Sessionization) 로직 개선</strong>
+              <ul>
+                <li>기존 <code>groupBy</code> + <code>collect_list</code>(UDF) 방식의 메모리 집약적 구조를 <code>Window Function(LAG, SUM OVER)</code>으로 전환.</li>
+                <li>유저별 이벤트를 리스트 객체화하지 않고 정렬된 파티션 내에서 스트리밍 방식으로 처리하여 메모리 점유율을 최적화함.</li>
+                <li>헤비 유저 및 어뷰징 트래픽에 대해 임계치 기반의 <strong>세션 강제 분리 로직</strong>을 적용하여 특정 Executor의 <strong>OOM(Out Of Memory) 장애를 방지</strong>하고 파이프라인 안정성을 확보함.</li>
+              </ul>
+            </li>
+            <li><strong>Shapley Value 모델 생성 알고리즘 분산 최적화</strong>
+              <ul>
+                <li>Driver 중심의 순차적 연산 구조를 <code>Broadcast Variable</code>과 <code>mapPartitions</code> 기반의 분산 처리 구조로 개편하여 병목 현상 해결.</li>
+                <li>데이터를 Driver로 수집하지 않는 <strong>Fully Distributed 방식</strong>을 채택하여 Driver 메모리 사용량을 <strong>75% 절감(8GB → 2GB)</strong>하여 의존성을 제거하고, 전체 처리 시간을 <strong>90초 이내로 단축</strong>하여 안정성 확보.
+                  → <a href="/blog/dda-pipeline-optimization" class="text-primary hover:text-accent">상세 기술 포스팅</a>
+                </li>
+              </ul>
             </li>
           </ul>
         </li>
-        <li><strong>Elasticsearch를 활용한 데이터 서빙</strong>
+        <li><strong>고성능 데이터 서빙 (Elasticsearch)</strong>
           <ul>
-            <li>집계된 통계 데이터를 Elasticsearch에 인덱싱하여 실시간 대시보드 서비스 지원</li>
-            <li>Java + Spring 기반 REST API의 디멘전별 집계·조회 기능 서포트</li>
+            <li>다양한 원천 데이터를 판매/유입 도메인으로 표준화하고, <strong>Wide-Table 전략</strong>을 통해 런타임 Join 부하를 제거하여 대규모 다차원 집계 쿼리에 대한 실시간 응답 성능 확보.</li>
+            <li>Java/Spring 기반 REST API와 연동하여 판매자별 커스텀 디멘전 필터링 및 통계 조회 기능을 지원하는 서빙 레이어 구축.</li>
           </ul>
         </li>
-        <li><strong>Airflow on Kubernetes 기반 워크플로우 자동화</strong>
+        <li><strong>복잡한 비즈니스 로직의 워크플로우 오케스트레이션 (Airflow)</strong>
           <ul>
-            <li>Kubernetes 환경에서 Airflow를 배포·운영하여 파이프라인 스케줄링, 의존성 관리, 실패 알림 자동화</li>
-            <li>데이터 품질 점검 태스크를 파이프라인에 통합하여 이상 데이터 조기 발견</li>
+            <li>장애 발생 시 영향 범위를 최소화하기 위한 원자적(Atomic) 태스크 설계</li>
+            <li>복잡한 업스트림-다운스트림 간의 정교한 의존성 관리 및 병렬 처리 극대화하여, 전체 파이프라인의 완료 시간 단축하여 SLA를 앞당김</li>
+            <li>데이터 품질 검증을 단계별 체크포인트로 삽입하여 이상 징후 조기 감지 — 서비스 지표의 적시성(Freshness)을 보장하기 위해, 데이터 결함 발견 시 파이프라인을 즉시 중단하는 대신 <strong>경고(Warning) 및 실시간 알림(Alerting)</strong> 체계를 가동하여 SLA를 준수함.</li>
           </ul>
+        </li>
+      </ul>
+
+      <h2>데이터 거버넌스 및 품질 관리</h2>
+      <p>
+        타 부서 소유의 원천 데이터에 대한 직접적인 통제권 부재 및 스키마 변경 리스크가 존재하기 때문에,
+        '우리 파이프라인은 우리가 스스로 보호한다'라는 가정 하에 2가지 장치를 두었습니다.
+      </p>
+      <ul>
+        <li><strong>Schema Registry 기반의 변경 감지</strong> — 원천 데이터의 무분별한 변경으로 인한 파이프라인 장애를 방지하기 위해 Schema Registry를 도입했습니다. 이를 통해 업스트림의 스키마 변경을 실시간으로 모니터링하고, 호환되지 않는 변경 발생 시 서빙 레이어 적재 전 단계에서 차단하여 데이터 오염을 방지했습니다.</li>
+        <li><strong>Great Expectations를 통한 지표 검증</strong> — 단순 스키마 체크를 넘어, 데이터의 값(Value) 범위나 비즈니스 로직의 정합성을 Great Expectations로 자동 검증했습니다. 시간 단위(Hourly) 배치를 통해 데이터 품질 이상 징후를 조기에 발견하고, 통계 수치의 왜곡을 사전에 차단하는 관제 체계를 구축했습니다.
+          → <a href="/projects/data-quality" class="text-primary hover:text-accent">데이터 품질 관리 프로젝트</a>
         </li>
       </ul>
 
@@ -84,14 +102,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         유저별 마케팅 채널 기여도 데이터는 리타겟팅 광고에 활용되었고,
         표준화된 커머스 통계 데이터는 신규 프로덕트 기획, 마케팅·운영 전략 수립 등 다양한 실무에 기여했습니다.
       </p>
-
-      <h2>원천 데이터 소스</h2>
-      <ul>
-        <li>클릭 이벤트 (상품 조회, 검색, 카테고리 탐색 등)</li>
-        <li>결제 이벤트 (주문, 결제 완료, 취소/환불 등)</li>
-        <li>광고 이벤트 (광고 노출, 클릭, 전환 등)</li>
-        <li>노출 이벤트 (상품 노출, 영역별 노출 등)</li>
-      </ul>
 
       <h2>BizAdvisor 서비스</h2>
       <p>
