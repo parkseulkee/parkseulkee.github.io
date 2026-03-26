@@ -56,7 +56,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
               <ul>
                 <li>기존 <code>groupBy</code> + <code>collect_list</code>(UDF) 방식의 메모리 집약적 구조를 <code>Window Function(LAG, SUM OVER)</code>으로 전환.</li>
                 <li>유저별 이벤트를 리스트 객체화하지 않고 정렬된 파티션 내에서 스트리밍 방식으로 처리하여 메모리 점유율을 최적화함.</li>
-                <li>헤비 유저 및 어뷰징 트래픽에 대해 임계치 기반의 <strong>세션 강제 분리 로직</strong>을 적용하여 특정 Executor의 <strong>OOM(Out Of Memory) 장애를 방지</strong>하고 파이프라인 안정성을 확보함.</li>
+                <li>헤비 유저 및 어뷰징 트래픽에 대해 임계치 기반의 <strong>세션 강제 분리 로직</strong>을 적용하여 특정 Executor의 <strong>OOM(Out Of Memory) 장애를 방지</strong>하고 파이프라인 안정성을 확보함.
+                  → <a href="/blog/spark-window-function-vs-collect-list" class="text-primary hover:text-accent">상세 기술 포스팅</a>
+                </li>
               </ul>
             </li>
             <li><strong>Shapley Value 모델 생성 알고리즘 분산 최적화</strong>
