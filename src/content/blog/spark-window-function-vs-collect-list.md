@@ -1,5 +1,5 @@
 ---
-date: '2023-01-01'
+date: '2020-03-04'
 title: "OOM을 방지하는 세션화 전략: 왜 Window Function인가?"
 subtitle: "collect_list + UDF의 메모리 집약적 구조를 Window Function으로 전환한 이유"
 categories: data-engineering
