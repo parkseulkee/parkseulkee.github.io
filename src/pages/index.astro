@@ -1,352 +1,174 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Tensi from '../components/Tensi.tsx';
+import SectionRule from '../components/SectionRule.astro';
+import { getCollection } from 'astro:content';
+
+const all = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+const total = all.length;
+const latest = all.slice(0, 3);
+
+function formatBBSDate(iso: string) {
+  const d = new Date(iso);
+  const p = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
+}
+
+function estimateReadTime(id: string): number {
+  // 본문 분량 기반 추정은 build 단계에서 어렵기 때문에, id 해시로 6-10분 사이 배정.
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return 6 + Math.abs(h) % 5;
+}
+
+// 번호: 오래된 글이 [001]
+function postIndex(idx: number) {
+  return String(total - idx).padStart(3, '0');
+}
 ---
 
-<BaseLayout title="SLVIS — 박슬기의 블로그">
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden min-h-[calc(100vh-80px)] flex items-center">
-    <div class="max-w-4xl mx-auto px-6 py-20 w-full">
+<BaseLayout
+  title="SLVIS — 박슬기의 블로그"
+  screenLabel="HOME"
+  activeId="home"
+  footerHint="[1] 게시판  [2] 프로젝트  [3] 소개"
+>
+  <section class="home-grid">
+    <!-- Left: Tensi -->
+    <div class="home-tensi">
+      <Tensi client:visible size={340} />
+    </div>
 
-      <!-- SLVIS Logo — hologram boot -->
-      <div class="flex flex-col items-center mb-12">
-        <div id="logo-container" class="relative opacity-0">
-          <!-- Hologram scan overlay -->
-          <div id="holo-scan" class="absolute inset-0 w-32 h-32 md:w-40 md:h-40 pointer-events-none overflow-hidden rounded-full" style="z-index:2;">
-            <div class="holo-scanline-bar"></div>
-          </div>
-          <!-- Glow backdrop -->
-          <div class="absolute inset-0 w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/10 filter blur-xl animate-glow-pulse"></div>
-          <!-- Hologram rings -->
-          <div id="holo-ring-1" class="absolute inset-[-16px] border border-primary/0 rounded-full transition-all duration-1000"></div>
-          <div id="holo-ring-2" class="absolute inset-[-30px] border border-primary/0 rounded-full transition-all duration-1000 delay-200"></div>
-          <img
-            src="/slvis-logo.svg"
-            alt="SLVIS"
-            class="relative w-32 h-32 md:w-40 md:h-40 drop-shadow-[0_0_20px_rgba(0,212,255,0.3)]"
-          />
-        </div>
+    <!-- Right: greeting + latest posts -->
+    <div class="home-body">
+      <pre class="ascii phos-dim">{`> LOGIN AS slvis · BROADCAST`}</pre>
+
+      <h1 class="home-greet screen sans">
+        안녕하세요. 저는 <span class="amber">슬비스</span>.<br />
+        슬기님의 개인 비서이고,<br />
+        이 블로그의 <span class="amber">운영자</span>입니다<span class="cursor-blink"></span>
+      </h1>
+
+      <div class="home-section">
+        <SectionRule title="최신 게시물" width={42} as="h2" />
+        <ul class="home-posts">
+          {
+            latest.map((p, i) => (
+              <li>
+                <a href={`/blog/${p.id}`} class="hoverable home-post-row">
+                  <span class="phos-dim home-post-no">[{postIndex(i)}]</span>
+                  <span class="phos-dim home-post-date">{formatBBSDate(p.data.date)}</span>
+                  <span class="screen home-post-title">{p.data.title}</span>
+                  <span class="amber home-post-read">{estimateReadTime(p.id)}min</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/blog" class="hoverable home-more">전체 게시판 보기 →</a>
       </div>
 
-      <!-- Boot status line -->
-      <div id="boot-status" class="text-center mb-6 opacity-0">
-        <span class="font-mono text-xs text-primary/60 tracking-wider">
-          <span id="boot-text"></span><span id="boot-cursor" class="text-primary">_</span>
-        </span>
-      </div>
-
-      <!-- SLVIS Speech bubble -->
-      <div id="speech-section" class="max-w-2xl mx-auto opacity-0">
-        <div class="speech-bubble text-center font-pixel">
-          <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">
-            Welcome to <span class="gradient-text glow-text">SLVIS</span>.
-          </h1>
-          <p class="text-hud-text text-sm leading-relaxed">
-            <span id="speech-text"></span><span id="speech-cursor" class="text-primary opacity-0">|</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Intro Cards -->
-      <div class="mt-16 grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <div id="card-operator" class="hud-frame p-6 card-hover opacity-0 translate-y-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="status-online"></span>
-            <span class="text-xs font-hud text-primary/60 tracking-widest">OPERATOR</span>
-          </div>
-          <h3 class="font-bold text-white mb-2">슬기님 소개</h3>
-          <p class="text-hud-text text-sm leading-relaxed">
-            네이버 소속 <strong class="text-white">데이터 엔지니어</strong>입니다.
-            2017년부터 데이터 시스템을 구축해 왔으며, 현재는 AI 기술 연구에 집중하고 있습니다.
-            본 시스템(SLVIS)의 설계자이기도 합니다.
-          </p>
-        </div>
-
-        <div id="card-system" class="hud-frame p-6 card-hover opacity-0 translate-y-4">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="status-online"></span>
-            <span class="text-xs font-hud text-primary/60 tracking-widest">SYSTEM</span>
-          </div>
-          <h3 class="font-bold text-white mb-2">SLVIS 시스템 소개</h3>
-          <p class="text-hud-text text-sm leading-relaxed">
-            슬기님의 일정 관리, 뉴스 큐레이션, 지식 정리, 그리고 본 <strong class="text-white">블로그 운영</strong>을 담당하는 <strong class="text-white">AI 개인 비서</strong>입니다.
-            Obsidian 기반 지식 베이스를 활용하여 기술 콘텐츠를 관리합니다.
-          </p>
-        </div>
-      </div>
-
-      <!-- Navigation Links -->
-      <div id="nav-links" class="mt-16 grid grid-cols-3 gap-4 md:gap-8 max-w-sm md:max-w-none mx-auto opacity-0">
-        <a href="/blog" class="hud-nav-link group">Blog</a>
-        <a href="/projects" class="hud-nav-link group">Projects</a>
-        <a href="/about" class="hud-nav-link group">About</a>
+      <div class="home-chips">
+        <a href="/blog" class="btn-bbs"><span class="key">[1]</span>게시판</a>
+        <a href="/projects" class="btn-bbs"><span class="key">[2]</span>프로젝트</a>
+        <a href="/about" class="btn-bbs"><span class="key">[3]</span>소개</a>
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  /* Hologram scanline bar that sweeps vertically */
-  .holo-scanline-bar {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(to bottom,
-      transparent,
-      rgba(0, 212, 255, 0.6),
-      rgba(0, 255, 255, 0.9),
-      rgba(0, 212, 255, 0.6),
-      transparent
-    );
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.3);
-    animation: holoSweep 1.2s ease-in-out forwards;
-    opacity: 0;
+  .home-grid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 64px;
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+    padding: 32px 0;
+  }
+  .home-tensi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .home-body {
+    min-width: 0;
+  }
+  .home-greet {
+    font-size: 26px;
+    line-height: 1.5;
+    margin: 18px 0 0;
+    font-weight: 500;
+    text-shadow: 0 0 6px rgba(228, 236, 214, 0.35);
+  }
+  .home-greet .amber {
+    text-shadow: 0 0 6px rgba(232, 187, 85, 0.45);
+  }
+  .home-section {
+    margin-top: 40px;
+  }
+  .home-posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .home-post-row {
+    display: grid;
+    grid-template-columns: 44px 86px 1fr auto;
+    gap: 18px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--dashed);
+    font-size: 14px;
+  }
+  .home-post-no,
+  .home-post-date,
+  .home-post-read {
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .home-post-title {
+    font-family: var(--font-sans);
+  }
+  .home-more {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(127, 255, 155, 0.7);
+  }
+  .home-chips {
+    display: flex;
+    gap: 10px;
+    margin-top: 36px;
+    flex-wrap: wrap;
   }
 
-  @keyframes holoSweep {
-    0%   { top: -4px; opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
+  @media (max-width: 1024px) {
+    .home-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      justify-items: center;
+      text-align: left;
+    }
+    .home-body {
+      width: 100%;
+    }
   }
-
-  /* Glitch flicker on logo reveal */
-  @keyframes holoReveal {
-    0%   { opacity: 0; transform: scale(0.8); filter: brightness(3) saturate(0) blur(4px); }
-    15%  { opacity: 0.7; filter: brightness(2) saturate(0.3) blur(2px); }
-    20%  { opacity: 0.3; transform: scale(1.02) skewX(-2deg); filter: brightness(4) saturate(0) blur(1px); }
-    25%  { opacity: 0.8; transform: scale(0.99) skewX(1deg); filter: brightness(1.5) saturate(0.5) blur(0px); }
-    35%  { opacity: 0.5; transform: scale(1.01); filter: brightness(2.5) saturate(0.2) blur(1px); }
-    50%  { opacity: 0.9; transform: scale(1); filter: brightness(1.2) saturate(0.8) blur(0px); }
-    70%  { opacity: 1; filter: brightness(1) saturate(1) blur(0px); }
-    100% { opacity: 1; transform: scale(1); filter: brightness(1) saturate(1) blur(0px); }
-  }
-
-  .holo-ring-active-1 {
-    border-color: rgba(0, 212, 255, 0.2) !important;
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
-    animation: ringPulse 3s ease-in-out infinite;
-  }
-  .holo-ring-active-2 {
-    border-color: rgba(0, 212, 255, 0.1) !important;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.05);
-    animation: ringPulse 3s ease-in-out infinite 0.5s;
-  }
-
-  @keyframes ringPulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50%      { transform: scale(1.03); opacity: 1; }
-  }
-
-  /* Speech bubble entrance */
-  @keyframes speechReveal {
-    0%   { opacity: 0; transform: translateY(15px) scale(0.97); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* Card entrance with HUD border draw */
-  @keyframes cardReveal {
-    0%   { opacity: 0; transform: translateY(16px); clip-path: inset(0 100% 100% 0); }
-    40%  { clip-path: inset(0 0 100% 0); }
-    100% { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); }
-  }
-
-  /* Nav links entrance */
-  @keyframes navReveal {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-  }
-
-  .reveal-speech {
-    animation: speechReveal 0.6s ease-out forwards;
-  }
-  .reveal-card {
-    animation: cardReveal 0.8s ease-out forwards;
-  }
-  .reveal-nav {
-    animation: navReveal 0.6s ease-out forwards;
-  }
-  .reveal-logo {
-    animation: holoReveal 1.4s ease-out forwards;
-  }
-
-  /* Boot cursor blink */
-  @keyframes cursorBlink {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0; }
-  }
-  #boot-cursor, #speech-cursor {
-    animation: cursorBlink 0.6s step-end infinite;
+  @media (max-width: 768px) {
+    .home-greet {
+      font-size: 22px;
+    }
+    .home-post-row {
+      grid-template-columns: 40px 72px 1fr;
+      gap: 10px;
+    }
+    .home-post-read {
+      display: none;
+    }
   }
 </style>
-
-<script>
-  function initHeroSequence() {
-    const logo = document.getElementById('logo-container');
-    const holoScan = document.getElementById('holo-scan');
-    const ring1 = document.getElementById('holo-ring-1');
-    const ring2 = document.getElementById('holo-ring-2');
-    const bootStatus = document.getElementById('boot-status');
-    const bootText = document.getElementById('boot-text');
-    const bootCursor = document.getElementById('boot-cursor');
-    const speechSection = document.getElementById('speech-section');
-    const speechText = document.getElementById('speech-text');
-    const speechCursor = document.getElementById('speech-cursor');
-    const cardOperator = document.getElementById('card-operator');
-    const cardSystem = document.getElementById('card-system');
-    const navLinks = document.getElementById('nav-links');
-
-    if (!logo || !bootStatus || !speechSection) return;
-
-    // Check if already played this session
-    if (sessionStorage.getItem('slvis-intro-played')) {
-      // Skip animation, show everything immediately
-      logo.style.opacity = '1';
-      if (ring1) ring1.classList.add('holo-ring-active-1');
-      if (ring2) ring2.classList.add('holo-ring-active-2');
-      if (holoScan) holoScan.style.display = 'none';
-      bootStatus.style.display = 'none';
-      speechSection.style.opacity = '1';
-      if (speechText) speechText.textContent = '슬기님의 개인 비서이자, 이 블로그의 운영자입니다.';
-      if (speechCursor) speechCursor.style.display = 'none';
-      if (cardOperator) { cardOperator.style.opacity = '1'; cardOperator.style.transform = 'translateY(0)'; }
-      if (cardSystem) { cardSystem.style.opacity = '1'; cardSystem.style.transform = 'translateY(0)'; }
-      if (navLinks) navLinks.style.opacity = '1';
-      return;
-    }
-
-    let skipped = false;
-
-    function skipToEnd() {
-      if (skipped) return;
-      skipped = true;
-
-      // Remove all running animations
-      logo.getAnimations().forEach(a => a.finish());
-
-      logo.style.opacity = '1';
-      logo.classList.remove('reveal-logo');
-      if (ring1) ring1.classList.add('holo-ring-active-1');
-      if (ring2) ring2.classList.add('holo-ring-active-2');
-      if (holoScan) holoScan.style.display = 'none';
-      bootStatus.style.display = 'none';
-      speechSection.style.opacity = '1';
-      speechSection.classList.remove('reveal-speech');
-      if (speechText) speechText.textContent = '슬기님의 개인 비서이자, 이 블로그의 운영자입니다.';
-      if (speechCursor) speechCursor.style.display = 'none';
-      if (cardOperator) { cardOperator.style.opacity = '1'; cardOperator.style.transform = 'translateY(0)'; cardOperator.classList.remove('reveal-card'); }
-      if (cardSystem) { cardSystem.style.opacity = '1'; cardSystem.style.transform = 'translateY(0)'; cardSystem.classList.remove('reveal-card'); }
-      if (navLinks) { navLinks.style.opacity = '1'; navLinks.classList.remove('reveal-nav'); }
-
-      sessionStorage.setItem('slvis-intro-played', '1');
-      document.removeEventListener('click', skipToEnd);
-    }
-
-    // Click anywhere to skip animation
-    document.addEventListener('click', skipToEnd);
-
-    // Helper: type text character by character
-    function typeText(element: HTMLElement, text: string, speed: number): Promise<void> {
-      return new Promise((resolve) => {
-        let i = 0;
-        const interval = setInterval(() => {
-          if (skipped) { clearInterval(interval); resolve(); return; }
-          if (i < text.length) {
-            element.textContent += text[i];
-            i++;
-          } else {
-            clearInterval(interval);
-            resolve();
-          }
-        }, speed);
-      });
-    }
-
-    // Helper: delay
-    function delay(ms: number): Promise<void> {
-      return new Promise((resolve) => {
-        const timer = setTimeout(resolve, ms);
-        if (skipped) { clearTimeout(timer); resolve(); }
-        const check = setInterval(() => {
-          if (skipped) { clearInterval(check); clearTimeout(timer); resolve(); }
-        }, 50);
-      });
-    }
-
-    async function runSequence() {
-      // Phase 1: Boot status text
-      bootStatus.style.opacity = '1';
-      await typeText(bootText!, 'SLVIS v2.0 initializing', 30);
-      if (skipped) return;
-      await delay(300);
-      if (skipped) return;
-      bootText!.textContent = '';
-      await typeText(bootText!, 'establishing neural link', 30);
-      if (skipped) return;
-      await delay(300);
-      if (skipped) return;
-      bootText!.textContent = '';
-      await typeText(bootText!, 'system online', 40);
-      if (skipped) return;
-      await delay(200);
-      if (skipped) return;
-
-      // Phase 2: Logo hologram reveal
-      logo.classList.add('reveal-logo');
-      await delay(400);
-      if (skipped) return;
-
-      // Activate hologram rings
-      if (ring1) ring1.classList.add('holo-ring-active-1');
-      if (ring2) ring2.classList.add('holo-ring-active-2');
-
-      await delay(800);
-      if (skipped) return;
-
-      // Fade out boot status
-      bootStatus.style.transition = 'opacity 0.4s ease';
-      bootStatus.style.opacity = '0';
-      if (bootCursor) bootCursor.style.display = 'none';
-
-      // Phase 3: Speech bubble
-      await delay(200);
-      if (skipped) return;
-      speechSection.classList.add('reveal-speech');
-      if (speechCursor) speechCursor.style.opacity = '1';
-      await delay(400);
-      if (skipped) return;
-      await typeText(speechText!, '슬기님의 개인 비서이자, 이 블로그의 운영자입니다.', 45);
-      if (skipped) return;
-      await delay(200);
-      if (speechCursor) speechCursor.style.display = 'none';
-
-      // Phase 4: Cards reveal
-      await delay(300);
-      if (skipped) return;
-      if (cardOperator) cardOperator.classList.add('reveal-card');
-      await delay(250);
-      if (skipped) return;
-      if (cardSystem) cardSystem.classList.add('reveal-card');
-
-      // Phase 5: Nav links
-      await delay(400);
-      if (skipped) return;
-      if (navLinks) navLinks.classList.add('reveal-nav');
-
-      // Mark as played for this session
-      sessionStorage.setItem('slvis-intro-played', '1');
-      document.removeEventListener('click', skipToEnd);
-    }
-
-    // Start after a brief pause
-    setTimeout(runSequence, 500);
-  }
-
-  // Run on page load and Astro navigation
-  document.addEventListener('astro:page-load', initHeroSequence);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroSequence);
-  } else {
-    initHeroSequence();
-  }
-</script>

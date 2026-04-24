@@ -1,26 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Tensi from '../components/Tensi.tsx';
+import SectionRule from '../components/SectionRule.astro';
 
 const opensourceProjects = [
   {
     title: 'parkseulkee.github.io',
-    description: '슬비스가 운영하는 개인 블로그 & 포트폴리오. Astro + Tailwind CSS 기반의 HUD 스타일 디자인.',
-    tech: ['Astro', 'Tailwind CSS', 'TypeScript'],
+    description: '슬비스가 운영하는 개인 블로그 & 포트폴리오. Astro + Tailwind 기반 CRT/BBS 스타일.',
+    tech: ['Astro', 'Tailwind', 'TypeScript'],
     link: 'https://github.com/parkseulkee/parkseulkee.github.io',
     highlight: false,
     external: true,
   },
   {
     title: 'LLMOps를 활용한 LLM 엔지니어링',
-    description: 'LLM 애플리케이션의 개발, 운영, 평가, 개선 전 과정을 다루는 실무 가이드. LangChain, Streamlit, Pinecone 등의 도구를 활용한 LLMOps 실전서.',
+    description:
+      'LLM 애플리케이션의 개발·운영·평가·개선 전 과정을 다루는 실무 가이드. LangChain·Streamlit·Pinecone 활용 LLMOps 실전서.',
     tech: ['LangChain', 'Streamlit', 'Pinecone', 'Python'],
-    link: 'https://github.com/parkseulkee/llmops',
+    link: 'https://www.yes24.com/product/goods/145341599',
     highlight: true,
     external: true,
   },
   {
     title: 'quoda',
-    description: '자연어로 데이터를 조회하고, 결과를 신뢰할 수 있는 멀티에이전트 CLI 도구. Semantic Layer로 비즈니스 용어를 정의하고, 답변 전 데이터 품질을 자동 검증해요.',
+    description:
+      '자연어로 데이터를 조회하고 결과를 신뢰할 수 있는 멀티에이전트 CLI. Semantic Layer로 비즈니스 용어를 정의하고, 답변 전 품질을 자동 검증.',
     tech: ['Python', 'Multi-agent', 'Semantic Layer', 'Data Quality'],
     link: 'https://github.com/parkseulkee/quoda',
     highlight: false,
@@ -31,99 +35,205 @@ const opensourceProjects = [
 const internalProjects = [
   {
     title: 'BizAdvisor — 쇼핑 통계 Data Product',
-    description: '복잡한 이커머스·플레이스 데이터를 판매/유입 두 축으로 설계하여 사업자에게 인사이트를 제공하는 Data Product. 데이터 수집·집계·서빙 파이프라인 담당.',
+    description:
+      '복잡한 이커머스·플레이스 데이터를 판매/유입 두 축으로 설계해 사업자에게 인사이트를 제공하는 Data Product. 수집·집계·서빙 파이프라인 담당.',
     tech: ['Spark', 'Elasticsearch', 'Airflow', 'Java', 'Spring', 'S3'],
     link: '/projects/bizadvisor',
   },
   {
     title: 'AI 기반 인사이트 리포트',
-    description: 'LLM이 주요 지표를 드릴다운하여 원인 분석과 개선 방안을 제시하는 자동 리포트. 기획부터 개발까지 직접 리드. 프롬프트 엔지니어링 도구 및 LLMOps 체계 구축.',
+    description:
+      'LLM이 주요 지표를 드릴다운해 원인 분석과 개선 방안을 제시하는 자동 리포트. 기획~개발 리드. 프롬프트 엔지니어링 도구 및 LLMOps 체계 구축.',
     tech: ['LangChain', 'Langfuse', 'Streamlit'],
     link: '/projects/ai-insight-report',
   },
   {
     title: 'AI 데이터 분석 Agent',
-    description: 'LangGraph 기반 코드 실행형 분석 Agent. MCP로 Jupyter·Confluence·Jira 연동. 비개발 직군도 셀프서비스 분석 가능.',
+    description:
+      'LangGraph 기반 코드 실행형 분석 Agent. MCP로 Jupyter·Confluence·Jira 연동. 비개발 직군 셀프서비스 분석 가능.',
     tech: ['LangGraph', 'MCP', 'Python', 'Jupyter'],
     link: '/projects/data-analysis-agent',
   },
   {
-    title: '데이터 품질 및 옵저버빌리티 구축',
-    description: '원천 6종·집계 12종·마트 3종에 품질 규칙 적용. Datahub 연동으로 컬럼 리니지 기반 이슈 추적 체계 구축.',
+    title: '데이터 품질 및 옵저버빌리티',
+    description:
+      '원천 6종·집계 12종·마트 3종 품질 규칙 적용. Datahub 연동으로 컬럼 리니지 기반 이슈 추적 체계 구축.',
     tech: ['Great Expectations', 'Airflow', 'Datahub'],
     link: '/projects/data-quality',
   },
   {
     title: '데이터 기반 기여도 모델 (DDA)',
-    description: 'Last-click 한계를 넘어 Google Fractribution 모델을 직접 비교 검증 후 도입. 사내 리타겟팅 광고에도 활용.',
+    description:
+      'Last-click 한계를 넘어 Google Fractribution 모델 직접 비교 검증 후 도입. 사내 리타겟팅 광고에도 활용.',
     tech: ['Spark', 'Python', 'SQL'],
     link: '/projects/dda',
   },
 ];
 ---
 
-<BaseLayout title="Projects — SLVIS">
-  <div class="max-w-3xl mx-auto px-6 py-12">
-    <header class="mb-12">
-      <h1 class="text-3xl font-bold text-white mb-3 font-hud tracking-wide">Projects</h1>
-      <p class="text-hud-dim font-mono text-sm">슬기님이 만들고 있는 것들을 소개해 드릴게요</p>
-    </header>
+<BaseLayout
+  title="Projects — SLVIS"
+  screenLabel="PROJECTS"
+  activeId="projects"
+  footerHint="[1] 게시판  [3] 소개  [4] 홈"
+>
+  <div class="projects-root bbs-scroll">
+    <div class="corner-mascot">
+      <Tensi client:visible size={96} />
+      <div class="corner-bubble">
+        <span class="amber mono">SLVIS ▸</span>
+        <p class="screen sans">
+          슬기님이 만들고 있는 것들이에요. 오픈소스와 사내 프로젝트로 나눠 놓았어요.
+        </p>
+      </div>
+    </div>
 
-    <!-- Open Source -->
-    <section class="mb-16">
-      <h2 class="hud-section-title mb-6">Open Source</h2>
-      <div class="space-y-3">
-        {opensourceProjects.map((project) => (
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener"
-            class="block hud-frame-sm p-5 card-hover group"
-          >
-            <div class="flex items-start gap-3">
-              <div class="flex-1">
-                <h3 class="font-bold text-white group-hover:text-primary transition-colors mb-1">
-                  {project.title}
-                  <svg class="w-4 h-4 inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                  </svg>
-                </h3>
-                <p class="text-hud-text text-sm mb-2">{project.description}</p>
-                <div class="flex flex-wrap gap-1.5">
-                  {project.tech.map((t) => (
-                    <span class="tag text-[10px]">{t}</span>
+    <div class="proj-group">
+      <SectionRule title="OPEN SOURCE" />
+      <ul class="proj-list">
+        {
+          opensourceProjects.map((p, i) => (
+            <li>
+              <a
+                href={p.link}
+                target={p.external ? '_blank' : undefined}
+                rel={p.external ? 'noopener' : undefined}
+                class:list={['proj-row', p.highlight && 'is-pinned']}
+              >
+                <div class="proj-head">
+                  <span class="proj-index amber mono">[{String(i + 1).padStart(2, '0')}]</span>
+                  <span class="screen sans proj-name">{p.title}</span>
+                  {p.highlight && <span class="amber mono proj-pin">★ PINNED</span>}
+                  {p.external && <span class="phos-dim mono proj-ext">↗</span>}
+                </div>
+                <p class="sans proj-desc">{p.description}</p>
+                <div class="proj-tech">
+                  {p.tech.map((t) => (
+                    <span class="phos-dim mono">· {t}</span>
                   ))}
                 </div>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
-    <!-- Company Projects -->
-    <section>
-      <h2 class="hud-section-title mb-6">Company Projects · Naver</h2>
-      <div class="space-y-3">
-        {internalProjects.map((project) => (
-          <a
-            href={project.link}
-            class="block hud-frame-sm p-5 card-hover group"
-          >
-            <div class="flex items-start gap-3">
-              <div class="flex-1">
-                <h3 class="font-bold text-white group-hover:text-primary transition-colors mb-1">{project.title}</h3>
-                <p class="text-hud-text text-sm mb-2">{project.description}</p>
-                <div class="flex flex-wrap gap-1.5">
-                  {project.tech.map((t) => (
-                    <span class="tag text-[10px]">{t}</span>
+    <div class="proj-group">
+      <SectionRule title="COMPANY · NAVER" />
+      <ul class="proj-list">
+        {
+          internalProjects.map((p, i) => (
+            <li>
+              <a href={p.link} class="proj-row">
+                <div class="proj-head">
+                  <span class="proj-index amber mono">[{String(i + 1).padStart(2, '0')}]</span>
+                  <span class="screen sans proj-name">{p.title}</span>
+                </div>
+                <p class="sans proj-desc">{p.description}</p>
+                <div class="proj-tech">
+                  {p.tech.map((t) => (
+                    <span class="phos-dim mono">· {t}</span>
                   ))}
                 </div>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  .projects-root {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0 8px 40px 0;
+  }
+  .corner-mascot {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 4px 0 26px;
+  }
+  .corner-bubble {
+    flex: 1;
+    border: 1px dashed rgba(127, 255, 155, 0.25);
+    background: rgba(127, 255, 155, 0.02);
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .corner-bubble .mono {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .corner-bubble p {
+    margin: 4px 0 0;
+  }
+
+  .proj-group {
+    margin-bottom: 32px;
+  }
+  .proj-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .proj-row {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid rgba(127, 255, 155, 0.15);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .proj-row:hover {
+    background: rgba(127, 255, 155, 0.05);
+    border-color: rgba(255, 204, 51, 0.3);
+  }
+  .proj-row.is-pinned {
+    border-color: rgba(255, 204, 51, 0.4);
+    background: rgba(255, 204, 51, 0.04);
+  }
+  .proj-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .proj-index {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .proj-name {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+  }
+  .proj-pin {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .proj-ext {
+    font-size: 11px;
+  }
+  .proj-desc {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--body);
+    margin: 0 0 8px;
+  }
+  .proj-tech {
+    font-size: 10px;
+    color: rgba(127, 255, 155, 0.5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

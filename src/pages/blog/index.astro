@@ -1,101 +1,151 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tensi from '../../components/Tensi.tsx';
+import SectionRule from '../../components/SectionRule.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+function formatBBSDate(iso: string) {
+  const d = new Date(iso);
+  const p = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
 }
 
-// Collect all unique tags
-const allTags = [...new Set(posts.flatMap(p => p.data.tags ?? []))].sort();
-
-// Group posts by year
-const postsByYear = posts.reduce((acc, post) => {
-  const year = new Date(post.data.date).getFullYear().toString();
-  if (!acc[year]) acc[year] = [];
-  acc[year].push(post);
-  return acc;
-}, {} as Record<string, typeof posts>);
+const postsByYear = posts.reduce(
+  (acc, post) => {
+    const year = new Date(post.data.date).getFullYear().toString();
+    if (!acc[year]) acc[year] = [];
+    acc[year].push(post);
+    return acc;
+  },
+  {} as Record<string, typeof posts>
+);
 
 const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
 ---
 
-<BaseLayout title="Blog — SLVIS">
-  <div class="max-w-3xl mx-auto px-6 py-12">
-    <header class="mb-12">
-      <h1 class="text-3xl font-bold text-white mb-3 font-hud tracking-wide">Blog</h1>
-      <p class="text-hud-dim font-mono text-sm">슬비스가 정리한 슬기님의 기술 이야기들</p>
-    </header>
+<BaseLayout
+  title="Blog — SLVIS"
+  screenLabel="BLOG · ALL POSTS"
+  activeId="blog"
+  footerHint="[3] 소개  [4] 홈"
+>
+  <div class="blog-root bbs-scroll">
+    <!-- Corner mascot -->
+    <div class="corner-mascot">
+      <Tensi client:visible size={96} />
+      <div class="corner-bubble">
+        <span class="amber mono">SLVIS ▸</span>
+        <p class="screen sans">
+          게시판이에요. 슬기님이 직접 작성하신 글만을 모았어요. 총 {posts.length}개의 글이 있고, 제목을 누르면 읽을 수 있어요.
+        </p>
+      </div>
+    </div>
 
-    <!-- Tag Filter -->
-    <nav class="mb-10 flex flex-wrap gap-2" id="tag-filter">
-      <button
-        class="tag tag-filter-btn active"
-        data-tag="all"
-      >
-        ALL
-      </button>
-      {allTags.map((tag) => (
-        <button
-          class="tag tag-filter-btn"
-          data-tag={tag}
-        >
-          {tag}
-        </button>
-      ))}
-    </nav>
-
-    {years.map((year) => (
-      <section class="mb-12 year-section" data-year={year}>
-        <h2 class="hud-section-title mb-4">{year}</h2>
-        <div class="space-y-1">
-          {postsByYear[year].map((post) => (
-            <a
-              href={`/blog/${post.id}`}
-              class="flex items-baseline gap-4 group py-3 border-b border-dark-border/50 hover:border-primary/30 transition-colors post-item"
-              data-tags={JSON.stringify(post.data.tags ?? [])}
-            >
-              <time class="text-sm text-hud-dim whitespace-nowrap font-mono w-24 shrink-0">
-                {formatDate(post.data.date).replace(`${year}년 `, '')}
-              </time>
-              <span class="font-medium text-hud-text group-hover:text-primary transition-colors">
-                {post.data.title}
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-    ))}
+    {
+      years.map((year) => (
+        <section class="year-section" data-year={year}>
+          <SectionRule title={year} />
+          <ul class="post-list">
+            {postsByYear[year].map((p) => (
+              <li>
+                <a href={`/blog/${p.id}`} class="hoverable post-row">
+                  <span class="phos-dim mono post-date">{formatBBSDate(p.data.date)}</span>
+                  {p.data.categories && (
+                    <span class="amber mono post-cat">{p.data.categories.toUpperCase()}</span>
+                  )}
+                  <span class="screen sans post-title">{p.data.title}</span>
+                  <span class="phos-dim mono post-tags">
+                    {(p.data.tags ?? []).slice(0, 2).join(' · ')}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
   </div>
 </BaseLayout>
 
-<script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-filter-btn');
-  const posts = document.querySelectorAll<HTMLElement>('.post-item');
-  const sections = document.querySelectorAll<HTMLElement>('.year-section');
+<style>
+  .blog-root {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding-right: 8px;
+    padding-bottom: 20px;
+  }
+  .corner-mascot {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 4px 0 26px;
+  }
+  .corner-bubble {
+    flex: 1;
+    border: 1px dashed rgba(155, 229, 173, 0.22);
+    background: rgba(155, 229, 173, 0.02);
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .corner-bubble .mono {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .corner-bubble p {
+    margin: 4px 0 0;
+  }
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tag = btn.dataset.tag!;
+  .year-section {
+    margin-bottom: 28px;
+  }
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .post-row {
+    display: grid;
+    grid-template-columns: 110px 130px 1fr 160px;
+    gap: 18px;
+    padding: 12px 4px;
+    border-bottom: 1px dashed var(--dashed);
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .post-date,
+  .post-cat,
+  .post-tags {
+    font-size: 11px;
+  }
+  .post-cat {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .post-title {
+    font-size: 14px;
+  }
+  .post-tags {
+    text-align: right;
+  }
 
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      posts.forEach(post => {
-        const tags: string[] = JSON.parse(post.dataset.tags || '[]');
-        const show = tag === 'all' || tags.includes(tag);
-        post.style.display = show ? '' : 'none';
-      });
-
-      // Hide year sections with no visible posts
-      sections.forEach(section => {
-        const visible = section.querySelectorAll<HTMLElement>('.post-item:not([style*="display: none"])');
-        section.style.display = visible.length > 0 ? '' : 'none';
-      });
-    });
-  });
-</script>
+  @media (max-width: 768px) {
+    .post-row {
+      grid-template-columns: 90px 1fr;
+      gap: 10px;
+    }
+    .post-cat {
+      order: 3;
+      grid-column: 1 / -1;
+      padding-left: 100px;
+    }
+    .post-tags {
+      display: none;
+    }
+  }
+</style>

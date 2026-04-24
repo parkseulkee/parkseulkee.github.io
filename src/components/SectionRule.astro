@@ -1,0 +1,37 @@
+---
+interface Props {
+  title: string;
+  /** 채움 문자 폭 — 섹션 폭에 맞춰 조정 */
+  width?: number;
+  as?: 'h2' | 'h3' | 'div';
+}
+const { title, width = 78, as: Tag = 'h2' } = Astro.props;
+const left = `── ${title} `;
+const fill = Math.max(4, width - left.length);
+const line = left + '─'.repeat(fill);
+---
+
+<Tag class="bbs-rule" aria-label={title}>
+  <pre class="ascii" aria-hidden="true">{line}</pre>
+  <span class="sr-only">{title}</span>
+</Tag>
+
+<style>
+  .bbs-rule {
+    margin: 0 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    font-weight: 400;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

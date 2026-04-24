@@ -2,3 +2,6 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+
+# Design handoff reference material — not part of the deployed site
+design_handoff_*/

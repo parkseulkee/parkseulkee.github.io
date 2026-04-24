@@ -1,5 +1,5 @@
 ---
-import BaseLayout from './BaseLayout.astro';
+import Reading from './Reading.astro';
 
 interface Props {
   title: string;
@@ -10,109 +10,19 @@ interface Props {
 }
 
 const { title, subtitle, date, categories, tags } = Astro.props;
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-}
 ---
 
-<BaseLayout title={`${title} — SLVIS`}>
-  <div class="relative max-w-6xl mx-auto px-6 py-12 xl:flex xl:gap-10">
-    <!-- Main Article -->
-    <article class="max-w-3xl w-full">
-      <header class="mb-10">
-        <div class="flex items-center gap-3 text-sm text-hud-dim font-mono mb-4">
-          <time datetime={date}>{formatDate(date)}</time>
-          {categories && (
-            <>
-              <span class="text-dark-border">·</span>
-              <span class="text-primary glow-text-sm">{categories}</span>
-            </>
-          )}
-        </div>
-        <h1 class="text-3xl md:text-4xl font-bold text-white leading-tight mb-3">
-          {title}
-        </h1>
-        {subtitle && (
-          <p class="text-lg text-hud-dim">{subtitle}</p>
-        )}
-        {tags && tags.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-4">
-            {tags.map((tag: string) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        )}
-      </header>
-
-      <hr class="hud-divider mb-10" />
-
-      <div class="prose max-w-none">
-        <slot />
-      </div>
-
-      <footer class="mt-16 pt-8 border-t border-dark-border">
-        <div class="flex items-center justify-between">
-          <a href="/blog" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-mono glow-text-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            모든 글 보기
-          </a>
-          <div class="flex items-center gap-2 text-xs text-hud-dim font-mono">
-            <img src="/slvis-logo.svg" alt="" class="w-4 h-4 opacity-40" />
-            SLVIS가 정리했어요
-          </div>
-        </div>
-      </footer>
-    </article>
-
-    <!-- Sidebar TOC (desktop only) -->
-    <aside id="toc" class="hidden xl:block w-52 shrink-0">
-      <nav class="sticky top-24">
-        <p class="hud-section-title text-xs mb-3">목차</p>
-        <ul id="toc-list" class="space-y-2 border-l border-dark-border pl-3"></ul>
-      </nav>
-    </aside>
-  </div>
-</BaseLayout>
-
-<script>
-  const prose = document.querySelector('.prose');
-  const tocNav = document.getElementById('toc');
-  const tocList = document.getElementById('toc-list');
-  if (prose && tocNav && tocList) {
-    const headings = prose.querySelectorAll('h2');
-    if (headings.length >= 2) {
-      headings.forEach((h, i) => {
-        const id = h.id || `section-${i}`;
-        h.id = id;
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = `#${id}`;
-        a.textContent = h.textContent;
-        a.className = 'toc-link text-xs text-hud-dim hover:text-primary transition-colors font-mono block leading-relaxed';
-        a.dataset.target = id;
-        li.appendChild(a);
-        tocList.appendChild(li);
-      });
-      tocNav.classList.remove('hidden');
-      tocNav.classList.add('xl:block');
-
-      // Highlight current section on scroll
-      const links = tocList.querySelectorAll<HTMLAnchorElement>('.toc-link');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            links.forEach(l => l.classList.remove('toc-active'));
-            const active = tocList.querySelector(`[data-target="${entry.target.id}"]`);
-            if (active) active.classList.add('toc-active');
-          }
-        });
-      }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
-
-      headings.forEach(h => observer.observe(h));
-    }
-  }
-</script>
+<Reading
+  title={title}
+  subtitle={subtitle}
+  date={date}
+  categories={categories}
+  tags={tags}
+  backHref="/blog"
+  backLabel="← 게시판으로"
+  screenLabel="READING"
+  activeId="blog"
+  footerHint="[Q/ESC] 목록으로  ·  [1] 게시판  [4] 홈"
+>
+  <slot />
+</Reading>

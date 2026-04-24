@@ -1,100 +1,75 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectDetail from '../../layouts/ProjectDetail.astro';
 ---
 
-<BaseLayout title="AI 기반 인사이트 리포트 개발 — SLVIS">
-  <article class="max-w-3xl mx-auto px-6 py-12">
-    <header class="mb-10">
-      <div class="flex items-center gap-2 text-sm text-hud-dim mb-4">
-        <span class="px-2 py-0.5 border border-dark-border text-hud-dim font-mono text-xs">프로젝트</span>
-        <span>·</span>
-        <span>네이버</span>
-      </div>
-      <h1 class="text-3xl font-bold text-white leading-tight mb-3">
-        AI 기반 인사이트 리포트 개발
-      </h1>
-      <div class="flex flex-wrap gap-2 mt-4">
-        {['LangChain', 'Streamlit', 'Python'].map(t => (
-          <span class="tag">{t}</span>
-        ))}
-      </div>
-    </header>
+<ProjectDetail
+  title="AI 기반 인사이트 리포트 개발"
+  category="프로젝트"
+  tags={['LangChain', 'Streamlit', 'Python']}
+>
+  <h2>배경</h2>
+  <p>
+    BizAdvisor는 사업자에게 통계 데이터를 제공하지만, 많은 소규모 사업자들이 데이터를 어떻게 해석해야 하는지 어려움을 겪고 있었습니다.
+    팀 기획자가 사업주 대상 강의와 컨설팅을 진행했지만, 근본적인 해결이 되지 않았습니다.
+    통계 데이터는 정해진 디멘전·메트릭을 하나씩 제공하다 보니, 유입수가 떨어졌을 때 특정 키워드 문제인지 상품 문제인지 연결해서 보는 것을 어려워했습니다.
+  </p>
+  <p>
+    기획부터 모든 개발을 직접 리드하여, LLM이 데이터를 자동으로 해석하고 개선 방안을 제시하는 인사이트 리포트를 Beta로 개발했습니다.
+  </p>
 
-    <div class="prose max-w-none">
-      <h2>배경</h2>
-      <p>
-        BizAdvisor는 사업자에게 통계 데이터를 제공하지만, 많은 소규모 사업자들이 데이터를 어떻게 해석해야 하는지 어려움을 겪고 있었습니다.
-        팀 기획자가 사업주 대상 강의와 컨설팅을 진행했지만, 근본적인 해결이 되지 않았습니다.
-        통계 데이터는 정해진 디멘전·메트릭을 하나씩 제공하다 보니, 유입수가 떨어졌을 때 특정 키워드 문제인지 상품 문제인지 연결해서 보는 것을 어려워했습니다.
-      </p>
-      <p>
-        기획부터 모든 개발을 직접 리드하여, LLM이 데이터를 자동으로 해석하고 개선 방안을 제시하는 인사이트 리포트를 Beta로 개발했습니다.
-      </p>
+  <h2>핵심 설계 결정 — Agent냐, Workflow냐</h2>
+  <p>
+    초기 기획은 Agent 기반 아키텍처였습니다. LLM이 어떤 디멘전을 드릴다운할지 스스로 판단하고,
+    필요하면 추가 데이터를 조회하며 분석을 이어가는 자율적인 구조입니다.
+    유연성은 높지만 문제가 있었습니다. <strong>토큰 소모량이 실행마다 달라진다</strong>는 점입니다.
+  </p>
+  <p>
+    사내 LLM(HCX)은 분당 처리 가능한 요청 수(RPM)와 토큰 수(TPM)에 상한이 있었습니다.
+    일정 규모 이상의 사업자에게 주기적으로 리포트를 생성해야 하는 상황에서,
+    Agent가 매번 얼마나 많은 토큰을 쓸지 예측할 수 없다면 서비스 안정성을 보장하기 어렵습니다.
+  </p>
+  <p>
+    결국 <strong>LangChain 기반의 고정 워크플로우</strong>를 선택했습니다.
+    지표별 드릴다운 경로를 사전에 정의하고, 각 단계에서 LLM이 해석을 담당하는 구조입니다.
+    Agent의 자율성을 포기하는 대신, 실행당 토큰 소모를 예측·제어할 수 있게 되어 운영 안정성을 확보했습니다.
+    이 선택은 "더 좋은 기술"의 문제가 아니라 <strong>주어진 제약 속에서 서비스를 실제로 운영할 수 있는가</strong>의 문제였습니다.
+  </p>
 
-      <h2>핵심 설계 결정 — Agent냐, Workflow냐</h2>
-      <p>
-        초기 기획은 Agent 기반 아키텍처였습니다. LLM이 어떤 디멘전을 드릴다운할지 스스로 판단하고,
-        필요하면 추가 데이터를 조회하며 분석을 이어가는 자율적인 구조입니다.
-        유연성은 높지만 문제가 있었습니다. <strong>토큰 소모량이 실행마다 달라진다</strong>는 점입니다.
-      </p>
-      <p>
-        사내 LLM(HCX)은 분당 처리 가능한 요청 수(RPM)와 토큰 수(TPM)에 상한이 있었습니다.
-        일정 규모 이상의 사업자에게 주기적으로 리포트를 생성해야 하는 상황에서,
-        Agent가 매번 얼마나 많은 토큰을 쓸지 예측할 수 없다면 서비스 안정성을 보장하기 어렵습니다.
-      </p>
-      <p>
-        결국 <strong>LangChain 기반의 고정 워크플로우</strong>를 선택했습니다.
-        지표별 드릴다운 경로를 사전에 정의하고, 각 단계에서 LLM이 해석을 담당하는 구조입니다.
-        Agent의 자율성을 포기하는 대신, 실행당 토큰 소모를 예측·제어할 수 있게 되어 운영 안정성을 확보했습니다.
-        이 선택은 "더 좋은 기술"의 문제가 아니라 <strong>주어진 제약 속에서 서비스를 실제로 운영할 수 있는가</strong>의 문제였습니다.
-      </p>
+  <h2>드릴다운 워크플로우 설계</h2>
+  <p>
+    인사이트 리포트의 핵심 로직은 지표 변동의 원인을 자동으로 찾아가는 드릴다운입니다.
+    예를 들어 결제금액이 전주 대비 하락했다면, LLM이 다음 순서로 하위 원인을 탐색합니다.
+  </p>
+  <ul>
+    <li><strong>지표 비교</strong> — 주요 지표(결제금액, 유입수, ROAS 등)를 지난주·이번주 기준으로 비교하여 이상 지표를 식별</li>
+    <li><strong>디멘전 드릴다운</strong> — 이상이 감지된 지표에 대해 관련 하위 디멘전(카테고리, 유입 경로, 상품 등)을 순차적으로 탐색. 어떤 디멘전에서 변화가 컸는지 LLM이 판단하고 그 방향으로 탐색을 이어감</li>
+    <li><strong>원인 서술 및 개선 방안 제시</strong> — 드릴다운 결과를 바탕으로 원인을 자연어로 서술하고, 사업자가 취할 수 있는 행동을 제안</li>
+  </ul>
+  <p>
+    드릴다운 경로를 고정 워크플로우로 설계한 덕분에, 각 단계의 입·출력이 명확해져
+    프롬프트 튜닝과 품질 평가도 구조적으로 접근할 수 있었습니다.
+  </p>
 
-      <h2>드릴다운 워크플로우 설계</h2>
-      <p>
-        인사이트 리포트의 핵심 로직은 지표 변동의 원인을 자동으로 찾아가는 드릴다운입니다.
-        예를 들어 결제금액이 전주 대비 하락했다면, LLM이 다음 순서로 하위 원인을 탐색합니다.
-      </p>
-      <ul>
-        <li><strong>지표 비교</strong> — 주요 지표(결제금액, 유입수, ROAS 등)를 지난주·이번주 기준으로 비교하여 이상 지표를 식별</li>
-        <li><strong>디멘전 드릴다운</strong> — 이상이 감지된 지표에 대해 관련 하위 디멘전(카테고리, 유입 경로, 상품 등)을 순차적으로 탐색. 어떤 디멘전에서 변화가 컸는지 LLM이 판단하고 그 방향으로 탐색을 이어감</li>
-        <li><strong>원인 서술 및 개선 방안 제시</strong> — 드릴다운 결과를 바탕으로 원인을 자연어로 서술하고, 사업자가 취할 수 있는 행동을 제안</li>
-      </ul>
-      <p>
-        드릴다운 경로를 고정 워크플로우로 설계한 덕분에, 각 단계의 입·출력이 명확해져
-        프롬프트 튜닝과 품질 평가도 구조적으로 접근할 수 있었습니다.
-      </p>
+  <h2>LLMOps — 프롬프트 관리 체계 구축</h2>
+  <p>
+    인사이트 리포트의 품질은 프롬프트에 직결됩니다.
+    리포트가 실제 사업자에게 도움이 되는지 평가하고, 프롬프트를 업데이트하고, 배포 여부를 결정하는 사이클이 빠르게 반복되었습니다.
+    초기에는 엑셀과 GitHub 이슈로 관리했지만, 어떤 프롬프트가 어떤 결과를 냈는지 추적하기 어려웠습니다.
+  </p>
+  <p>
+    그래서 <strong>프롬프트 엔지니어링 도구를 직접 개발</strong>했습니다.
+    프롬프트·모델 조합별로 평가 지표를 산출하고, 결과를 비교하여 배포할 조합을 결정하는 도구입니다.
+  </p>
+  <p>
+    이 경험을 정리하여 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">NAVER D2에 기고</a>했고,
+    책 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a>의 핵심 챕터로 연결했습니다.
+  </p>
 
-      <h2>LLMOps — 프롬프트 관리 체계 구축</h2>
-      <p>
-        인사이트 리포트의 품질은 프롬프트에 직결됩니다.
-        리포트가 실제 사업자에게 도움이 되는지 평가하고, 프롬프트를 업데이트하고, 배포 여부를 결정하는 사이클이 빠르게 반복되었습니다.
-        초기에는 엑셀과 GitHub 이슈로 관리했지만, 어떤 프롬프트가 어떤 결과를 냈는지 추적하기 어려웠습니다.
-      </p>
-      <p>
-        그래서 <strong>프롬프트 엔지니어링 도구를 직접 개발</strong>했습니다.
-        프롬프트·모델 조합별로 평가 지표를 산출하고, 결과를 비교하여 배포할 조합을 결정하는 도구입니다.
-      </p>
-      <p>
-        이 경험을 정리하여 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">NAVER D2에 기고</a>했고,
-        책 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a>의 핵심 챕터로 연결했습니다.
-      </p>
-
-      <h2>성과</h2>
-      <ul>
-        <li>기획부터 개발·운영까지 <strong>단독 리드</strong>하여 프로덕션 Beta 배포</li>
-        <li>사내 모델(HCX) 기반으로 일부 스토어 대상 Beta 서비스 운영 중 (2024.12~)</li>
-        <li>프롬프트 관리 체계 구축 경험을 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">NAVER D2 기고</a>로 공유</li>
-        <li>실무 경험을 체계화하여 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a> 출간</li>
-      </ul>
-    </div>
-
-    <footer class="mt-16 pt-8 border-t border-dark-border">
-      <a href="/about" class="text-primary hover:text-accent flex items-center gap-2 text-sm font-medium font-mono glow-text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-        </svg>
-        About으로 돌아가기
-      </a>
-    </footer>
-  </article>
-</BaseLayout>
+  <h2>성과</h2>
+  <ul>
+    <li>기획부터 개발·운영까지 <strong>단독 리드</strong>하여 프로덕션 Beta 배포</li>
+    <li>사내 모델(HCX) 기반으로 일부 스토어 대상 Beta 서비스 운영 중 (2024.12~)</li>
+    <li>프롬프트 관리 체계 구축 경험을 <a href="https://d2.naver.com/helloworld/3344073" target="_blank" rel="noopener">NAVER D2 기고</a>로 공유</li>
+    <li>실무 경험을 체계화하여 <a href="https://www.yes24.com/product/goods/145341599" target="_blank" rel="noopener">「LLMOps를 활용한 LLM 엔지니어링」</a> 출간</li>
+  </ul>
+</ProjectDetail>

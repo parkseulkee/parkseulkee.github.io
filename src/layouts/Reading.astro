@@ -1,0 +1,298 @@
+---
+/**
+ * Reading.astro — 긴 글 공용 레이아웃 (블로그 포스트 · 프로젝트 상세)
+ * 헤더(Tensi + 메타 + 제목) / 목차 / 본문(bbs-prose) / 푸터 를 공통으로 제공.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Tensi from '../components/Tensi.tsx';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  /** 블로그 포스트 날짜 (ISO) */
+  date?: string;
+  /** 블로그 포스트 카테고리 */
+  categories?: string;
+  /** 프로젝트 카테고리 레이블 — e.g. "주요 업무 · Data Product" */
+  category?: string;
+  /** 프로젝트 소속 — e.g. "네이버" */
+  org?: string;
+  externalUrl?: string;
+  externalLabel?: string;
+  tags?: string[];
+  backHref: string;
+  backLabel: string;
+  /** Q/ESC 누르면 이동할 경로. 미지정 시 backHref 사용 */
+  returnKey?: string;
+  screenLabel: string;
+  activeId: 'blog' | 'projects';
+  footerHint: string;
+}
+
+const {
+  title,
+  subtitle,
+  date,
+  categories,
+  category,
+  org,
+  externalUrl,
+  externalLabel,
+  tags,
+  backHref,
+  backLabel,
+  returnKey,
+  screenLabel,
+  activeId,
+  footerHint,
+} = Astro.props;
+
+const returnTarget = returnKey ?? backHref;
+
+function formatBBSDate(iso: string) {
+  const d = new Date(iso);
+  const p = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
+}
+---
+
+<BaseLayout
+  title={`${title} — SLVIS`}
+  screenLabel={screenLabel}
+  activeId={activeId}
+  footerHint={footerHint}
+>
+  <div class="reading-root bbs-scroll" data-return={returnTarget}>
+    <a href={backHref} class="hoverable reading-back mono">{backLabel}</a>
+
+    <header class="reading-head">
+      <Tensi client:visible size={80} />
+      <div class="reading-meta">
+        <div class="mono reading-meta-line">
+          {
+            categories && (
+              <>
+                <span class="amber">{categories.toUpperCase()}</span>
+                <span class="phos-dim">·</span>
+              </>
+            )
+          }
+          {category && <span class="amber">[{category}]</span>}
+          {date && <span class="phos-dim">{formatBBSDate(date)}</span>}
+          {org && <span class="phos-dim">· {org}</span>}
+          {
+            externalUrl && (
+              <>
+                <span class="phos-dim">·</span>
+                <a
+                  href={externalUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="hoverable screen"
+                >
+                  {externalLabel ?? externalUrl} ↗
+                </a>
+              </>
+            )
+          }
+        </div>
+        <h1 class="screen sans reading-title">{title}</h1>
+        {subtitle && <p class="sans reading-subtitle">{subtitle}</p>}
+        {
+          tags && tags.length > 0 && (
+            <div class="reading-tags">
+              {tags.map((t) => (
+                <span class="phos-dim mono">#{t}</span>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </header>
+
+    <nav id="reading-toc" class="reading-toc" hidden aria-label="목차">
+      <p class="mono phos-dim reading-toc-title">▸ 목차</p>
+      <ol id="reading-toc-list" class="reading-toc-list"></ol>
+    </nav>
+
+    <div class="reading-body bbs-prose">
+      <slot />
+    </div>
+
+    <footer class="reading-footer">
+      <a href={backHref} class="hoverable mono">{backLabel}</a>
+      <span class="phos-dim mono">— END —</span>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .reading-root {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 8px 10px 40px 0;
+    position: relative;
+  }
+  .reading-back {
+    display: inline-block;
+    margin-bottom: 18px;
+    font-size: 11px;
+    color: rgba(155, 229, 173, 0.7);
+  }
+  .reading-head {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    margin-bottom: 22px;
+    border-bottom: 1px dashed var(--phos-line);
+  }
+  .reading-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .reading-meta-line {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    flex-wrap: wrap;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+  .reading-title {
+    font-size: 26px;
+    line-height: 1.35;
+    font-weight: 600;
+    margin: 4px 0 10px;
+  }
+  .reading-subtitle {
+    color: var(--body);
+    font-size: 14px;
+    margin: 0 0 12px;
+  }
+  .reading-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .reading-toc {
+    max-width: 720px;
+    margin: 0 auto 28px;
+    border: 1px dashed var(--phos-line);
+    padding: 14px 18px 16px;
+    background: rgba(155, 229, 173, 0.02);
+  }
+  .reading-toc-title {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    margin: 0 0 10px;
+  }
+  .reading-toc-list {
+    list-style: decimal inside;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--body);
+  }
+  .reading-toc-list li::marker {
+    color: var(--phos-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .reading-toc-list a {
+    color: var(--body);
+    text-decoration: none;
+    transition: color 0.12s ease;
+  }
+  .reading-toc-list a:hover,
+  .reading-toc-list a.toc-active {
+    color: var(--amber);
+  }
+
+  .reading-body {
+    margin: 0 auto;
+    max-width: 720px;
+  }
+
+  .reading-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 60px auto 0;
+    padding-top: 20px;
+    border-top: 1px dashed var(--phos-line);
+    font-size: 12px;
+    max-width: 720px;
+  }
+</style>
+
+<script>
+  function initReadingTOC() {
+    const body = document.querySelector('.bbs-prose');
+    const toc = document.getElementById('reading-toc') as HTMLElement | null;
+    const tocList = document.getElementById('reading-toc-list');
+    if (!body || !toc || !tocList) return;
+
+    tocList.innerHTML = '';
+    const headings = body.querySelectorAll<HTMLHeadingElement>('h2');
+    if (headings.length < 2) {
+      toc.hidden = true;
+      return;
+    }
+    toc.hidden = false;
+    headings.forEach((h, i) => {
+      if (!h.id) h.id = `section-${i}`;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent ?? '';
+      a.dataset.target = h.id;
+      a.className = 'toc-link';
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+    const links = tocList.querySelectorAll<HTMLAnchorElement>('.toc-link');
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            links.forEach((l) => l.classList.remove('toc-active'));
+            const active = tocList.querySelector(`[data-target="${entry.target.id}"]`);
+            if (active) active.classList.add('toc-active');
+          }
+        });
+      },
+      { rootMargin: '0px 0px -70% 0px', threshold: 0 }
+    );
+    headings.forEach((h) => obs.observe(h));
+  }
+
+  function initReadingKeys() {
+    const root = document.querySelector<HTMLElement>('.reading-root');
+    const returnTarget = root?.dataset.return || '/';
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === 'q' || e.key === 'Q' || e.key === 'Escape') {
+        window.location.assign(returnTarget);
+      }
+    };
+    const prev = (window as any).__bbsReadingKey;
+    if (prev) window.removeEventListener('keydown', prev);
+    (window as any).__bbsReadingKey = onKey;
+    window.addEventListener('keydown', onKey);
+  }
+
+  initReadingTOC();
+  initReadingKeys();
+  document.addEventListener('astro:page-load', () => {
+    initReadingTOC();
+    initReadingKeys();
+  });
+</script>

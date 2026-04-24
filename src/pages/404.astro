@@ -1,25 +1,58 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Tensi from '../components/Tensi.tsx';
 ---
 
-<BaseLayout title="404 — SLVIS">
-  <div class="max-w-3xl mx-auto px-6 py-20 text-center">
-    <div class="relative inline-block mb-8">
-      <div class="absolute inset-0 w-24 h-24 rounded-full bg-alert/10 filter blur-lg animate-glow-pulse"></div>
-      <img src="/slvis-logo.svg" alt="SLVIS" class="relative w-24 h-24 mx-auto opacity-50" />
+<BaseLayout
+  title="404 — SLVIS"
+  screenLabel="ERROR 404"
+  activeId="other"
+  footerHint="[4] 홈으로  ·  존재하지 않는 경로"
+>
+  <section class="e404">
+    <Tensi client:visible size={180} />
+    <pre class="ascii amber e404-code">
+{`┌───────────────┐
+│  ERROR  404   │
+└───────────────┘`}
+    </pre>
+    <p class="screen sans e404-msg">
+      앗, 이 페이지는 찾을 수 없어요.<br />
+      제가 아직 정리하지 못한 곳인 것 같아요<span class="cursor-blink"></span>
+    </p>
+    <div class="e404-actions">
+      <a href="/" class="btn-bbs"><span class="key">[4]</span>홈으로</a>
+      <a href="/blog" class="btn-bbs"><span class="key">[1]</span>게시판</a>
     </div>
-    <h1 class="text-6xl font-hud font-bold text-alert/30 mb-4 glow-text" style="text-shadow: 0 0 20px rgba(255,75,43,0.3);">404</h1>
-    <div class="speech-bubble inline-block max-w-md mx-auto font-pixel">
-      <p class="text-xs font-hud text-alert tracking-widest mb-2">// ERROR</p>
-      <p class="text-hud-text">
-        앗, 이 페이지는 찾을 수 없어요!<br />
-        제가 아직 정리하지 못한 곳인 것 같아요.
-      </p>
-    </div>
-    <div class="mt-8">
-      <a href="/" class="hud-btn">
-        홈으로 돌아가기
-      </a>
-    </div>
-  </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .e404 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 0;
+    text-align: center;
+  }
+  .e404-code {
+    font-size: 14px;
+    line-height: 1.3;
+    margin: 8px 0 0;
+  }
+  .e404-msg {
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 420px;
+    margin: 0;
+  }
+  .e404-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import Reading from './Reading.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  category?: string;
+  org?: string;
+  tags?: string[];
+  externalUrl?: string;
+  externalLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  category,
+  org = '네이버',
+  tags = [],
+  externalUrl,
+  externalLabel,
+} = Astro.props;
+---
+
+<Reading
+  title={title}
+  subtitle={subtitle}
+  category={category}
+  org={org}
+  tags={tags}
+  externalUrl={externalUrl}
+  externalLabel={externalLabel}
+  backHref="/projects"
+  backLabel="← 프로젝트 목록으로"
+  screenLabel={`PROJECT · ${title.toUpperCase()}`}
+  activeId="projects"
+  footerHint="[2] 프로젝트 목록  [4] 홈  · [Q] 뒤로"
+>
+  <slot />
+</Reading>

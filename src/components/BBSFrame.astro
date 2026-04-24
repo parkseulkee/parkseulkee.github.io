@@ -1,0 +1,272 @@
+---
+type MenuItem = { key: string; id: string; label: string; href: string };
+const MENU: MenuItem[] = [
+  { key: '1', id: 'blog', label: '게시판', href: '/blog' },
+  { key: '2', id: 'projects', label: '프로젝트', href: '/projects' },
+  { key: '3', id: 'about', label: '소개', href: '/about' },
+  { key: '4', id: 'home', label: '홈', href: '/' },
+];
+
+interface Props {
+  screenLabel: string;
+  footerHint?: string;
+  activeId?: 'home' | 'blog' | 'projects' | 'about' | 'post' | 'other';
+}
+
+const {
+  screenLabel,
+  footerHint = '[1] 게시판  [2] 프로젝트  [3] 소개  [4] 홈',
+  activeId = 'other',
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+
+function activeByPath(id: string): boolean {
+  if (activeId !== 'other') return activeId === id;
+  if (id === 'home') return pathname === '/' || pathname === '';
+  if (id === 'blog') return pathname.startsWith('/blog');
+  if (id === 'projects') return pathname.startsWith('/projects') || pathname.startsWith('/work');
+  if (id === 'about') return pathname.startsWith('/about');
+  return false;
+}
+---
+
+<!-- Titlebar -->
+<header class="bbs-titlebar">
+  <div class="bbs-titlebar-row">
+    <span class="phos bbs-tb-brand">SLVIS-BBS v2.0</span>
+    <span class="phos-dim" id="bbs-date">--------</span>
+    <span class="phos-dim" id="bbs-time">--:--:--</span>
+    <span class="phos bbs-screen-label">{screenLabel}</span>
+    <span class="phos-dim bbs-tb-users">접속자 1/1</span>
+    <span class="phos-dim">감도: <span id="bbs-sense" class="phos">高</span></span>
+  </div>
+</header>
+
+<!-- Menubar -->
+<nav class="bbs-menu" aria-label="주 메뉴">
+  {
+    MENU.map((m, i) => {
+      const active = activeByPath(m.id);
+      return (
+        <a
+          href={m.href}
+          class:list={['bbs-menu-item', active && 'is-active']}
+          aria-current={active ? 'page' : undefined}
+        >
+          <span class="bbs-menu-key">[{m.key}]</span>
+          <span class="bbs-menu-label">{m.label}</span>
+          {active && <span class="bbs-menu-caret">◀</span>}
+          {i < MENU.length - 1 && <span class="bbs-menu-sep" aria-hidden="true" />}
+        </a>
+      );
+    })
+  }
+</nav>
+
+<!-- Slot for page content -->
+<div class="bbs-stage">
+  <slot />
+</div>
+
+<!-- Footer -->
+<footer class="bbs-footer">
+  <span class="phos-dim bbs-footer-hint">{footerHint}</span>
+  <span class="phos-dim bbs-footer-sig">© SEULKEE · SLVIS</span>
+</footer>
+
+<style>
+  .bbs-titlebar {
+    color: var(--phos);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    border-top: 1px solid var(--phos-line);
+    border-bottom: 1px solid var(--phos-line);
+    padding: 10px 12px;
+  }
+  .bbs-titlebar-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .bbs-tb-brand {
+    font-weight: 500;
+  }
+  .bbs-titlebar-row .bbs-screen-label {
+    flex: 1;
+    min-width: 100px;
+    text-align: left;
+  }
+  .bbs-tb-users {
+    margin-left: auto;
+  }
+  @media (max-width: 768px) {
+    .bbs-titlebar {
+      padding: 8px 10px;
+      font-size: 10.5px;
+    }
+    .bbs-titlebar-row {
+      gap: 10px;
+    }
+    .bbs-tb-users {
+      display: none;
+    }
+  }
+
+  .bbs-menu {
+    display: flex;
+    margin: 14px 0;
+    border-top: 1px solid var(--phos-line);
+    border-bottom: 1px solid var(--phos-line);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .bbs-menu-item {
+    flex: 1;
+    padding: 10px 14px;
+    color: var(--phos);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bbs-menu-item + .bbs-menu-item {
+    border-left: 1px dashed var(--phos-line);
+  }
+  .bbs-menu-item:hover,
+  .bbs-menu-item:focus-visible {
+    background: rgba(155, 229, 173, 0.04);
+    color: var(--amber);
+    outline: none;
+  }
+  .bbs-menu-item.is-active {
+    background: rgba(155, 229, 173, 0.06);
+    color: var(--amber);
+  }
+  .bbs-menu-key {
+    font-size: 11px;
+    color: var(--phos-dim);
+  }
+  .bbs-menu-item.is-active .bbs-menu-key,
+  .bbs-menu-item:hover .bbs-menu-key {
+    color: var(--amber);
+  }
+  .bbs-menu-caret {
+    margin-left: auto;
+    color: var(--amber);
+  }
+  .bbs-menu-sep {
+    display: none;
+  }
+
+  .bbs-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 18px;
+  }
+
+  .bbs-footer {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--phos-line);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 768px) {
+    .bbs-footer {
+      font-size: 10px;
+    }
+    .bbs-footer-sig {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .bbs-titlebar-row {
+      font-size: 10.5px;
+      gap: 10px;
+    }
+    .bbs-titlebar-row .bbs-screen-label {
+      min-width: 0;
+    }
+    .bbs-menu-item {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    .bbs-menu-caret {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  function pad2(n: number) {
+    return n.toString().padStart(2, '0');
+  }
+  function updateClock() {
+    const now = new Date();
+    const date = `${now.getFullYear()}.${pad2(now.getMonth() + 1)}.${pad2(now.getDate())}`;
+    const time = `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+    const d = document.getElementById('bbs-date');
+    const t = document.getElementById('bbs-time');
+    if (d) d.textContent = date;
+    if (t) t.textContent = time;
+  }
+  function initBBSFrame() {
+    updateClock();
+    const prev = (window as any).__bbsClockTimer;
+    if (prev) clearInterval(prev);
+    (window as any).__bbsClockTimer = setInterval(updateClock, 1000);
+
+    // sensitivity indicator reflects idle state
+    let idleTimer: ReturnType<typeof setTimeout>;
+    const sense = document.getElementById('bbs-sense');
+    const resetIdle = () => {
+      if (sense) sense.textContent = '高';
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        if (sense) sense.textContent = '低';
+      }, 4000);
+    };
+    resetIdle();
+    ['pointermove', 'keydown', 'wheel', 'touchstart'].forEach((ev) =>
+      window.addEventListener(ev, resetIdle, { passive: true })
+    );
+
+    // keyboard shortcuts [1]-[4]
+    const map: Record<string, string> = {
+      '1': '/blog',
+      '2': '/projects',
+      '3': '/about',
+      '4': '/',
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      const target = map[e.key];
+      if (target && window.location.pathname !== target) {
+        e.preventDefault();
+        window.location.assign(target);
+      }
+    };
+    const prevKey = (window as any).__bbsKeyHandler;
+    if (prevKey) window.removeEventListener('keydown', prevKey);
+    (window as any).__bbsKeyHandler = onKey;
+    window.addEventListener('keydown', onKey);
+  }
+  initBBSFrame();
+  document.addEventListener('astro:page-load', initBBSFrame);
+</script>
